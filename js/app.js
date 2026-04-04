@@ -1,18 +1,72 @@
 /* ============================================================
    app.js — Classic Mac OS Portfolio
-   Vanilla JS · No dependencies · 'use strict'
+   Loads poetry, works, music, and about from external files
+   Vanilla JS · No dependencies
    ============================================================ */
 "use strict";
 
 /* ============================================================
-   CONSTANTS
+   GLOBAL STATE
    ============================================================ */
+
+window.POEMS = Array.isArray(window.POEMS) ? window.POEMS : [];
+window.WORKS = Array.isArray(window.WORKS) ? window.WORKS : [];
+window.MUSIC = Array.isArray(window.MUSIC) ? window.MUSIC : [];
+window.ABOUT =
+  typeof window.ABOUT === "object" && window.ABOUT ? window.ABOUT : {};
 
 const WINDOWS = ["poetry", "music", "works", "about"];
 const MENUBAR_HEIGHT = 22;
 
+let zCounter = 100;
+let dragState = null;
+let resizeState = null;
+
 /* ============================================================
-   1. LIVE CLOCK
+   BASIC HELPERS
+   ============================================================ */
+
+function getWin(name) {
+  return document.getElementById("window-" + name);
+}
+
+function getPointerClientPos(e) {
+  if (e.touches && e.touches[0]) {
+    return {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+    };
+  }
+
+  return {
+    x: e.clientX,
+    y: e.clientY,
+  };
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function ensureArray(value) {
+  return Array.isArray(value) ? value : [];
+}
+
+function singularPlural(n, singular, plural) {
+  return n + " " + (n === 1 ? singular : plural);
+}
+
+function toggleDisplay(el, visible, displayValue) {
+  if (!el) return;
+  el.style.display = visible ? displayValue || "block" : "none";
+}
+
+/* ============================================================
+   CLOCK
    ============================================================ */
 
 function updateClock() {
@@ -27,14 +81,8 @@ function updateClock() {
 }
 
 /* ============================================================
-   2. WINDOW MANAGEMENT
+   WINDOW MANAGEMENT
    ============================================================ */
-
-let zCounter = 100;
-
-function getWin(name) {
-  return document.getElementById("window-" + name);
-}
 
 function openWindow(name) {
   const win = getWin(name);
@@ -98,7 +146,7 @@ function arrangeWindows() {
 }
 
 /* ============================================================
-   3. WINDOW CONTROL BUTTONS
+   WINDOW CONTROL BUTTONS
    ============================================================ */
 
 function handleWinBtn(btn) {
@@ -142,24 +190,8 @@ function handleWinBtn(btn) {
 }
 
 /* ============================================================
-   4. DRAGGING
+   DRAGGING
    ============================================================ */
-
-let dragState = null;
-
-function getPointerClientPos(e) {
-  if (e.touches && e.touches[0]) {
-    return {
-      x: e.touches[0].clientX,
-      y: e.touches[0].clientY,
-    };
-  }
-
-  return {
-    x: e.clientX,
-    y: e.clientY,
-  };
-}
 
 function onDragStart(e) {
   if (window.innerWidth <= 768) return;
@@ -211,10 +243,8 @@ function onDragEnd() {
 }
 
 /* ============================================================
-   5. RESIZING
+   RESIZING
    ============================================================ */
-
-let resizeState = null;
 
 function onResizeStart(e) {
   if (window.innerWidth <= 768) return;
@@ -237,12 +267,17 @@ function onResizeStart(e) {
 function onResizeMove(e) {
   if (!resizeState) return;
 
-  const { win, startX, startY, startW, startH } = resizeState;
-  const newW = Math.max(280, startW + (e.clientX - startX));
-  const newH = Math.max(180, startH + (e.clientY - startY));
+  const newW = Math.max(
+    280,
+    resizeState.startW + (e.clientX - resizeState.startX),
+  );
+  const newH = Math.max(
+    180,
+    resizeState.startH + (e.clientY - resizeState.startY),
+  );
 
-  win.style.width = newW + "px";
-  win.style.height = newH + "px";
+  resizeState.win.style.width = newW + "px";
+  resizeState.win.style.height = newH + "px";
 }
 
 function onResizeEnd() {
@@ -253,7 +288,7 @@ function onResizeEnd() {
 }
 
 /* ============================================================
-   6. DESKTOP ICONS
+   DESKTOP ICONS / MOBILE DOCK
    ============================================================ */
 
 function initDesktopIcons() {
@@ -265,8 +300,8 @@ function initDesktopIcons() {
 
     icon.addEventListener("click", (e) => {
       e.stopPropagation();
-
       clearTimeout(clickTimer);
+
       clickTimer = setTimeout(() => {
         icons.forEach((i) => i.classList.remove("selected"));
         icon.classList.add("selected");
@@ -295,10 +330,6 @@ function initDesktopIcons() {
   }
 }
 
-/* ============================================================
-   7. MOBILE DOCK
-   ============================================================ */
-
 function initDock() {
   document.querySelectorAll(".dock-item").forEach((item) => {
     item.addEventListener("click", () => toggleWindow(item.dataset.window));
@@ -306,14 +337,13 @@ function initDock() {
 }
 
 /* ============================================================
-   8. MENUS
+   MENUS
    ============================================================ */
 
 function closeAllDropdowns() {
   document
     .querySelectorAll(".menu-dropdown")
     .forEach((d) => d.classList.remove("open"));
-
   document
     .querySelectorAll(".menu-item, .menu-logo")
     .forEach((m) => m.classList.remove("active"));
@@ -402,7 +432,11 @@ function initMenuBar() {
     githubItem.addEventListener("click", (e) => {
       e.stopPropagation();
       closeAllDropdowns();
-      window.open("https://github.com/", "_blank", "noopener,noreferrer");
+      window.open(
+        "https://github.com/blanketghosts/mainwebsite",
+        "_blank",
+        "noopener,noreferrer",
+      );
     });
   }
 
@@ -410,15 +444,8 @@ function initMenuBar() {
 }
 
 /* ============================================================
-   9. HELPERS — FRONTMATTER / MARKDOWN / ESCAPING
+   FRONTMATTER / MARKDOWN HELPERS
    ============================================================ */
-
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-}
 
 function parseFrontmatter(text) {
   const src = String(text).replace(/^\uFEFF/, "");
@@ -434,8 +461,8 @@ function parseFrontmatter(text) {
 
   const fm = src.slice(3, endIndex).trim();
   const body = src.slice(endIndex + 4).trim();
-
   const data = {};
+
   fm.split("\n").forEach((line) => {
     const colonIdx = line.indexOf(":");
     if (colonIdx === -1) return;
@@ -482,7 +509,6 @@ function renderMarkdown(text) {
 
   blocks.forEach((block) => {
     const trimmed = block.trim();
-
     if (!trimmed) return;
 
     if (
@@ -498,7 +524,6 @@ function renderMarkdown(text) {
         const itemText = line.trim().replace(/^[-*]\s+/, "");
         rendered.push("<li>" + renderInlineMarkdown(itemText) + "</li>");
       });
-
       return;
     }
 
@@ -548,15 +573,41 @@ function renderMarkdown(text) {
   return rendered.join("");
 }
 
+async function loadCollectionFromMarkdown(manifestPath, directory, mapper) {
+  const idxResp = await fetch(manifestPath);
+  if (!idxResp.ok) {
+    throw new Error(manifestPath + " not found (" + idxResp.status + ")");
+  }
+
+  const files = await idxResp.json();
+  if (!Array.isArray(files)) {
+    throw new Error("Invalid manifest: " + manifestPath);
+  }
+
+  const items = await Promise.all(
+    files.map(async (filename) => {
+      const resp = await fetch(directory + "/" + filename);
+      if (!resp.ok) {
+        throw new Error("Could not fetch " + directory + "/" + filename);
+      }
+
+      const parsed = parseFrontmatter(await resp.text());
+      return mapper(parsed, filename);
+    }),
+  );
+
+  return items;
+}
+
+/* ============================================================
+   POETRY
+   ============================================================ */
+
 function derivePoemYear(poem) {
   return String(poem.meta || "")
     .split("·")[0]
     .trim();
 }
-
-/* ============================================================
-   10. POETRY WINDOW
-   ============================================================ */
 
 function bindPoetryRow(row, index) {
   row.addEventListener("click", () => showPoem(index));
@@ -569,28 +620,45 @@ function bindPoetryRow(row, index) {
 }
 
 function showPoem(index) {
-  const poem = (window.POEMS || [])[index];
+  const poem = ensureArray(window.POEMS)[index];
   if (!poem) return;
 
   document.getElementById("poem-title").textContent = poem.title || "Untitled";
   document.getElementById("poem-meta").textContent = poem.meta || "";
   document.getElementById("poem-body").textContent = poem.body || "";
 
-  document.getElementById("poem-display").style.display = "block";
-  document.getElementById("poetry-list").style.display = "none";
-  document.querySelector('[data-back="poetry"]').style.display = "inline-flex";
+  toggleDisplay(document.getElementById("poem-display"), true, "block");
+  toggleDisplay(document.getElementById("poetry-list"), false);
+  toggleDisplay(
+    document.querySelector('[data-back="poetry"]'),
+    true,
+    "inline-flex",
+  );
+  toggleDisplay(document.getElementById("poetry-empty"), false);
+
   document.querySelector("#window-poetry .status-left").textContent =
     poem.title || "Untitled";
 }
 
 function showPoetryList() {
-  document.getElementById("poem-display").style.display = "none";
-  document.getElementById("poetry-list").style.display = "block";
-  document.querySelector('[data-back="poetry"]').style.display = "none";
+  const poems = ensureArray(window.POEMS);
+  toggleDisplay(document.getElementById("poem-display"), false);
+  toggleDisplay(
+    document.getElementById("poetry-list"),
+    poems.length > 0,
+    "block",
+  );
+  toggleDisplay(document.querySelector('[data-back="poetry"]'), false);
+  toggleDisplay(
+    document.getElementById("poetry-empty"),
+    poems.length === 0,
+    "block",
+  );
 
-  const n = Array.isArray(window.POEMS) ? window.POEMS.length : 0;
   document.querySelector("#window-poetry .status-left").textContent =
-    n + (n === 1 ? " poem" : " poems");
+    poems.length === 0
+      ? "No poems"
+      : singularPlural(poems.length, "poem", "poems");
 }
 
 function rebuildPoetryList(poems) {
@@ -606,7 +674,6 @@ function rebuildPoetryList(poems) {
     row.className = "list-row";
     row.dataset.poem = String(i);
     row.tabIndex = 0;
-
     row.innerHTML =
       `<span class="col-name">${escapeHtml(poem.title || "Untitled")}</span>` +
       `<span class="col-meta">${escapeHtml(derivePoemYear(poem))}</span>`;
@@ -628,8 +695,29 @@ function initPoetryWindow() {
   if (backBtn) backBtn.addEventListener("click", showPoetryList);
 }
 
+async function loadPoemsFromMarkdown() {
+  try {
+    const poems = await loadCollectionFromMarkdown(
+      "poems/index.json",
+      "poems",
+      (data) => ({
+        title: data.title || "Untitled",
+        meta: data.meta || "",
+        body: data.body || "",
+      }),
+    );
+
+    window.POEMS = poems;
+    rebuildPoetryList(poems);
+  } catch (err) {
+    console.info("[poems] load failed:", err.message);
+    window.POEMS = [];
+    rebuildPoetryList([]);
+  }
+}
+
 /* ============================================================
-   11. OTHER WORKS WINDOW
+   OTHER WORKS
    ============================================================ */
 
 function bindWorkCard(card, index) {
@@ -643,7 +731,7 @@ function bindWorkCard(card, index) {
 }
 
 function showWork(index) {
-  const work = (window.WORKS || [])[index];
+  const work = ensureArray(window.WORKS)[index];
   if (!work) return;
 
   document.getElementById("works-v-icon").textContent = work.icon || "✦";
@@ -655,21 +743,34 @@ function showWork(index) {
     work.body || "",
   );
 
-  document.getElementById("works-display").style.display = "block";
-  document.getElementById("works-list-view").style.display = "none";
-  document.querySelector('[data-back="works"]').style.display = "inline-flex";
+  toggleDisplay(document.getElementById("works-display"), true, "block");
+  toggleDisplay(document.getElementById("works-list-view"), false);
+  toggleDisplay(
+    document.querySelector('[data-back="works"]'),
+    true,
+    "inline-flex",
+  );
+  toggleDisplay(document.getElementById("works-empty"), false);
+
   document.querySelector("#window-works .status-left").textContent =
     work.title || "Untitled";
 }
 
 function showWorksList() {
-  document.getElementById("works-display").style.display = "none";
-  document.getElementById("works-list-view").style.display = "block";
-  document.querySelector('[data-back="works"]').style.display = "none";
+  const works = ensureArray(window.WORKS);
+  toggleDisplay(document.getElementById("works-display"), false);
+  toggleDisplay(document.getElementById("works-list-view"), true, "block");
+  toggleDisplay(document.querySelector('[data-back="works"]'), false);
+  toggleDisplay(
+    document.getElementById("works-empty"),
+    works.length === 0,
+    "block",
+  );
 
-  const n = Array.isArray(window.WORKS) ? window.WORKS.length : 0;
   document.querySelector("#window-works .status-left").textContent =
-    n + (n === 1 ? " item" : " items");
+    works.length === 0
+      ? "No items"
+      : singularPlural(works.length, "item", "items");
 }
 
 function rebuildWorksGrid(works) {
@@ -710,56 +811,6 @@ function initWorksWindow() {
   if (backBtn) backBtn.addEventListener("click", showWorksList);
 }
 
-/* ============================================================
-   12. MARKDOWN COLLECTION LOADING
-   ============================================================ */
-
-async function loadCollectionFromMarkdown(manifestPath, directory, mapper) {
-  const idxResp = await fetch(manifestPath);
-  if (!idxResp.ok) {
-    throw new Error(manifestPath + " not found (" + idxResp.status + ")");
-  }
-
-  const files = await idxResp.json();
-  if (!Array.isArray(files) || files.length === 0) {
-    throw new Error("Empty manifest: " + manifestPath);
-  }
-
-  const items = await Promise.all(
-    files.map(async (filename) => {
-      const resp = await fetch(directory + "/" + filename);
-      if (!resp.ok) {
-        throw new Error("Could not fetch " + directory + "/" + filename);
-      }
-
-      const parsed = parseFrontmatter(await resp.text());
-      return mapper(parsed, filename);
-    }),
-  );
-
-  return items;
-}
-
-async function loadPoemsFromMarkdown() {
-  try {
-    const poems = await loadCollectionFromMarkdown(
-      "poems/index.json",
-      "poems",
-      (data) => ({
-        title: data.title || "Untitled",
-        meta: data.meta || "",
-        body: data.body || "",
-      }),
-    );
-
-    window.POEMS = poems;
-    rebuildPoetryList(poems);
-  } catch (err) {
-    console.info("[poems] Using inline fallback:", err.message);
-    if (Array.isArray(window.POEMS)) rebuildPoetryList(window.POEMS);
-  }
-}
-
 async function loadWorksFromMarkdown() {
   try {
     const works = await loadCollectionFromMarkdown(
@@ -778,13 +829,200 @@ async function loadWorksFromMarkdown() {
     window.WORKS = works;
     rebuildWorksGrid(works);
   } catch (err) {
-    console.info("[works] Using inline fallback:", err.message);
-    if (Array.isArray(window.WORKS)) rebuildWorksGrid(window.WORKS);
+    console.info("[works] load failed:", err.message);
+    window.WORKS = [];
+    rebuildWorksGrid([]);
   }
 }
 
 /* ============================================================
-   13. WINDOW CLICK → FOCUS
+   MUSIC
+   ============================================================ */
+
+function createTrackCard(track) {
+  const wrap = document.createElement("div");
+  wrap.className = "mac-audio-player";
+
+  const safeTitle = escapeHtml(track.title || "Untitled Track");
+  const safeMeta = escapeHtml(track.meta || "");
+  const safeDesc = escapeHtml(track.desc || "");
+  const safeSrc = escapeHtml(track.src || "");
+
+  wrap.innerHTML = `
+    <div class="track-title">${safeTitle}</div>
+    <div class="track-meta">${safeMeta}</div>
+    <audio controls src="${safeSrc}" preload="none">
+      Your browser does not support the audio element.
+    </audio>
+    <div class="track-desc">${safeDesc}</div>
+  `;
+
+  return wrap;
+}
+
+function rebuildMusicList(tracks) {
+  const list = document.getElementById("music-list");
+  const empty = document.getElementById("music-empty");
+  const status = document.querySelector("#window-music .status-left");
+
+  if (!list || !empty || !status) return;
+
+  list.innerHTML = "";
+
+  if (!tracks.length) {
+    toggleDisplay(empty, true, "block");
+    status.textContent = "No tracks";
+    return;
+  }
+
+  toggleDisplay(empty, false);
+
+  tracks.forEach((track) => {
+    list.appendChild(createTrackCard(track));
+  });
+
+  status.textContent = singularPlural(tracks.length, "track", "tracks");
+}
+
+async function loadMusicFromJson() {
+  try {
+    const resp = await fetch("music/index.json");
+    if (!resp.ok) {
+      throw new Error("music/index.json not found (" + resp.status + ")");
+    }
+
+    const tracks = await resp.json();
+    if (!Array.isArray(tracks)) {
+      throw new Error("music/index.json must be an array");
+    }
+
+    window.MUSIC = tracks.map((track) => ({
+      title: track.title || "Untitled Track",
+      meta: track.meta || "",
+      src: track.src || "",
+      desc: track.desc || "",
+    }));
+
+    rebuildMusicList(window.MUSIC);
+  } catch (err) {
+    console.info("[music] load failed:", err.message);
+    window.MUSIC = [];
+    rebuildMusicList([]);
+  }
+}
+
+/* ============================================================
+   ABOUT
+   ============================================================ */
+
+function makeAboutLink(href, label, isEmail) {
+  const a = document.createElement("a");
+  a.className = "mac-btn";
+  a.textContent = label;
+
+  if (isEmail) {
+    a.href = "mailto:" + href;
+  } else {
+    a.href = href;
+    a.target = "_blank";
+    a.rel = "noopener";
+  }
+
+  return a;
+}
+
+function renderAbout(data) {
+  const avatar = document.getElementById("about-avatar");
+  const name = document.getElementById("about-name");
+  const tagline = document.getElementById("about-tagline");
+  const bio = document.getElementById("about-bio");
+  const links = document.getElementById("about-links");
+  const empty = document.getElementById("about-empty");
+  const status = document.querySelector("#window-about .status-left");
+
+  if (!avatar || !name || !tagline || !bio || !links || !empty || !status)
+    return;
+
+  const hasMeaningfulContent =
+    data &&
+    (data.name ||
+      data.tagline ||
+      data.body ||
+      data.email ||
+      data.github ||
+      data.twitter);
+
+  if (!hasMeaningfulContent) {
+    toggleDisplay(empty, true, "block");
+    name.textContent = "About";
+    tagline.textContent = "";
+    bio.innerHTML = "";
+    links.innerHTML = "";
+    status.textContent = "No about info";
+    return;
+  }
+
+  toggleDisplay(empty, false);
+
+  avatar.textContent = data.avatar || "✦";
+  name.textContent = data.name || "Your Name";
+  tagline.textContent = data.tagline || "";
+  bio.innerHTML = renderMarkdown(data.body || "");
+  links.innerHTML = "";
+
+  if (data.email) {
+    links.appendChild(
+      makeAboutLink(data.email, data.email_label || "Email", true),
+    );
+  }
+
+  if (data.github) {
+    links.appendChild(
+      makeAboutLink(data.github, data.github_label || "GitHub", false),
+    );
+  }
+
+  if (data.twitter) {
+    links.appendChild(
+      makeAboutLink(data.twitter, data.twitter_label || "Twitter/X", false),
+    );
+  }
+
+  status.textContent = "1 item";
+}
+
+async function loadAboutFromMarkdown() {
+  try {
+    const resp = await fetch("content/about.md");
+    if (!resp.ok) {
+      throw new Error("content/about.md not found (" + resp.status + ")");
+    }
+
+    const parsed = parseFrontmatter(await resp.text());
+
+    window.ABOUT = {
+      avatar: parsed.avatar || "✦",
+      name: parsed.name || "Your Name",
+      tagline: parsed.tagline || "",
+      email: parsed.email || "",
+      email_label: parsed.email_label || "Email",
+      github: parsed.github || "",
+      github_label: parsed.github_label || "GitHub",
+      twitter: parsed.twitter || "",
+      twitter_label: parsed.twitter_label || "Twitter/X",
+      body: parsed.body || "",
+    };
+
+    renderAbout(window.ABOUT);
+  } catch (err) {
+    console.info("[about] load failed:", err.message);
+    window.ABOUT = {};
+    renderAbout({});
+  }
+}
+
+/* ============================================================
+   WINDOW FOCUS / GLOBAL EVENTS / INTERACTIONS
    ============================================================ */
 
 function initWindowFocus() {
@@ -794,10 +1032,6 @@ function initWindowFocus() {
     win.addEventListener("mousedown", () => focusWindow(name));
   });
 }
-
-/* ============================================================
-   14. GLOBAL EVENTS
-   ============================================================ */
 
 function initGlobalEvents() {
   document.addEventListener("mousemove", (e) => {
@@ -824,10 +1058,6 @@ function initGlobalEvents() {
   document.addEventListener("touchend", onDragEnd);
 }
 
-/* ============================================================
-   15. WINDOW INTERACTIONS
-   ============================================================ */
-
 function initWindowInteractions() {
   document.querySelectorAll(".title-bar").forEach((bar) => {
     bar.addEventListener("mousedown", onDragStart);
@@ -844,10 +1074,6 @@ function initWindowInteractions() {
     if (btn) handleWinBtn(btn);
   });
 }
-
-/* ============================================================
-   16. RESPONSIVE BODY CLASS
-   ============================================================ */
 
 function syncMobileClass() {
   document.body.classList.toggle("mobile", window.innerWidth <= 768);
@@ -888,8 +1114,15 @@ document.addEventListener("DOMContentLoaded", () => {
   initPoetryWindow();
   initWorksWindow();
 
+  rebuildPoetryList([]);
+  rebuildWorksGrid([]);
+  rebuildMusicList([]);
+  renderAbout({});
+
   loadPoemsFromMarkdown();
   loadWorksFromMarkdown();
+  loadMusicFromJson();
+  loadAboutFromMarkdown();
 
   syncMobileClass();
   window.addEventListener("resize", syncMobileClass);

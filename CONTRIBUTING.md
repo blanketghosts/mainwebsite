@@ -2,13 +2,13 @@
 
 This site is a static GitHub Pages project for publishing poetry, music, and other creative work in a Classic Mac OS style.
 
-Most content can be added without touching the JavaScript. The site loads content from markdown files in subfolders.
+All user-facing content is loaded from files in the repository. You should not need to edit `js/app.js` to add new poems, works, music tracks, or About content.
 
 ---
 
 ## Project Structure
 
-```/dev/null/tree.txt#L1-11
+```/dev/null/tree.txt#L1-15
 TEST/
 ├── index.html
 ├── css/style.css
@@ -19,6 +19,10 @@ TEST/
 ├── works/
 │   ├── index.json
 │   └── *.md
+├── music/
+│   └── index.json
+├── content/
+│   └── about.md
 └── CONTRIBUTING.md
 ```
 
@@ -26,23 +30,31 @@ TEST/
 
 ## How content loading works
 
-Because this site is hosted statically on GitHub Pages, it cannot automatically list files in a folder on its own.
+Because this site is hosted statically on GitHub Pages, it cannot automatically list files in a folder by itself.
 
-So each content folder uses:
+So dynamic sections use one of these patterns:
 
-1. a folder of markdown files
-2. an `index.json` manifest listing those files in order
+1. a folder of markdown files plus an `index.json` manifest
+2. a single JSON file
+3. a single markdown file
+
+### Current content sources
+
+- **Poetry** → `poems/*.md` + `poems/index.json`
+- **Other Works** → `works/*.md` + `works/index.json`
+- **Music** → `music/index.json`
+- **About** → `content/about.md`
 
 If you add a new poem or work, you must:
 
 - create the markdown file
-- add its filename to the relevant `index.json`
+- add its filename to the appropriate `index.json`
 
 ---
 
 ## Adding a Poem
 
-### 1. Create a new markdown file in `poems/`
+### 1. Create a markdown file in `poems/`
 
 Example filename:
 
@@ -96,7 +108,7 @@ The order in `index.json` is the order shown on the site.
 
 ## Adding an Other Work
 
-### 1. Create a new markdown file in `works/`
+### 1. Create a markdown file in `works/`
 
 Example filename:
 
@@ -160,33 +172,105 @@ Again, the file order controls the display order on the site.
 
 ---
 
-## Editing existing content
+## Editing Music
 
-To edit a poem or work:
+The music section is driven by `music/index.json`.
 
-1. open the corresponding markdown file
-2. change the frontmatter and/or body
-3. commit and push
+Each entry in the array represents one track card and audio player.
 
-No additional build step is required.
+### Format
 
----
+```/dev/null/music-index.json#L1-18
+[
+  {
+    "title": "Threshold",
+    "meta": "Acoustic Guitar · 3:42 · 2024",
+    "src": "audio/threshold.mp3",
+    "desc": "An instrumental piece exploring the space between silence and sound."
+  },
+  {
+    "title": "Correspondence",
+    "meta": "Piano · 4:18 · 2024",
+    "src": "audio/correspondence.mp3",
+    "desc": "A short piano study written during a period of letter-writing."
+  }
+]
+```
 
-## Music section
+### Music fields
 
-The music section is still managed directly in `index.html`.
+- `title` — track title
+- `meta` — instrument, duration, year, or other short metadata
+- `src` — path to the audio file relative to the site root
+- `desc` — short description shown below the player
 
-Look for the audio player blocks and update the `src=""` values to point at your audio files.
+### Audio file placement
+
+Audio files can live in an `audio/` folder in the project root.
 
 Example:
 
-```/dev/null/audio-example.html#L1-3
-<audio controls src="audio/my-track.mp3" preload="none">
-  Your browser does not support the audio element.
-</audio>
+```/dev/null/audio-paths.txt#L1-3
+audio/threshold.mp3
+audio/correspondence.mp3
+audio/ground-floor.mp3
 ```
 
-You can create an `audio/` folder in the project root and place your `.mp3` files there.
+### Notes for music
+
+- Use valid `.mp3`, `.ogg`, or other browser-supported audio formats
+- Make sure the `src` path matches the real filename exactly
+- The order in `music/index.json` is the order shown on the site
+
+---
+
+## Editing the About Section
+
+The About window is driven by `content/about.md`.
+
+### Format
+
+```/dev/null/about.md#L1-15
+---
+avatar: ✦
+name: Your Name
+tagline: Poet · Composer · Writer
+email: you@example.com
+email_label: Email
+github: https://github.com/your-name
+github_label: GitHub
+twitter: https://twitter.com/your-handle
+twitter_label: Twitter/X
+---
+
+Welcome. This is a space for poetry, music, and other creative work.
+
+Everything here was made slowly and with care.
+```
+
+### About fields
+
+- `avatar` — usually a symbol or emoji
+- `name` — displayed as the profile name
+- `tagline` — short role line
+- `email` — used to build a mail link
+- `email_label` — button text for the email link
+- `github` — GitHub profile URL
+- `github_label` — button text for the GitHub link
+- `twitter` — Twitter/X profile URL
+- `twitter_label` — button text for the Twitter/X link
+
+### About body
+
+Everything below the frontmatter becomes the About body text.
+
+The body supports basic markdown-style formatting such as:
+
+- paragraphs
+- headings
+- bullet lists
+- links
+- emphasis
 
 ---
 
@@ -225,20 +309,33 @@ year: [2025]
 
 Use lowercase filenames with hyphens:
 
-```/dev/null/filenames.txt#L1-5
+```/dev/null/filenames.txt#L1-6
 the-weight-of-small-things.md
 rain-on-aluminum.md
 night-shift-at-the-observatory.md
 what-maps-leave-out.md
+my-new-essay.md
 ```
 
 This keeps paths clean and predictable.
 
 ---
 
+## Editing existing content
+
+To edit an existing poem, work, track listing, or About text:
+
+1. open the corresponding file
+2. change the frontmatter, JSON, and/or body text
+3. commit and push
+
+No build step is required.
+
+---
+
 ## Local preview
 
-If you open the site directly from the filesystem, some dynamic markdown loading may fall back to inline content depending on your browser.
+If you open the site directly from the filesystem, some dynamic content loading may not work depending on your browser.
 
 For the most accurate preview, use a simple local web server or preview through GitHub Pages.
 
@@ -250,7 +347,7 @@ After editing content:
 
 ```/dev/null/git-steps.txt#L1-4
 git add .
-git commit -m "Add new poem and essay"
+git commit -m "Add new poem and update music"
 git push origin main
 ```
 
@@ -258,7 +355,7 @@ GitHub Pages will publish the changes automatically after the push completes.
 
 ---
 
-## Content style tips
+## Content tips
 
 ### For poems
 - Keep titles short and clear
@@ -278,6 +375,16 @@ Suggested icons:
 - `🎭` — performance
 - `🧪` — experimental piece
 
+### For music
+- Keep `meta` concise
+- Make sure audio files are uploaded before publishing
+- Keep filenames simple and lowercase
+
+### For About
+- Keep the body concise and personal
+- Use labels like `Email`, `GitHub`, and `Twitter/X` for button text
+- Prefer stable profile URLs
+
 ---
 
 ## If something does not appear
@@ -287,8 +394,9 @@ Check these first:
 1. Is the new filename listed in the correct `index.json`?
 2. Is the filename spelled exactly the same?
 3. Is the frontmatter wrapped in `---`?
-4. Did you push to `main`?
-5. Did GitHub Pages finish deploying?
+4. Is `music/index.json` valid JSON?
+5. Did you push to `main`?
+6. Did GitHub Pages finish deploying?
 
 ---
 
@@ -296,7 +404,9 @@ Check these first:
 
 - Add poems in `poems/*.md`
 - Add works in `works/*.md`
-- Update `poems/index.json` or `works/index.json`
+- Edit tracks in `music/index.json`
+- Edit About in `content/about.md`
+- Update `poems/index.json` or `works/index.json` when adding files
 - Push to GitHub
 - GitHub Pages publishes the update
 

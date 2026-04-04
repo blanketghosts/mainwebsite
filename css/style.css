@@ -901,6 +901,45 @@ ol {
     margin-top: 12px;
 }
 
+.about-bio h1,
+.about-bio h2,
+.about-bio h3 {
+    font-family: var(--font-ui);
+    font-weight: bold;
+    line-height: 1.3;
+    margin: 0 0 10px;
+}
+
+.about-bio h1 {
+    font-size: 18px;
+}
+
+.about-bio h2 {
+    font-size: 16px;
+}
+
+.about-bio h3 {
+    font-size: 14px;
+}
+
+.about-bio ul {
+    margin: 0 0 14px 20px;
+    list-style: square;
+}
+
+.about-bio li {
+    margin-bottom: 6px;
+}
+
+.about-bio a {
+    color: var(--mac-accent);
+    text-decoration: underline;
+}
+
+.about-bio a:hover {
+    color: var(--mac-black);
+}
+
 .about-links {
     margin-top: 20px;
     display: flex;
