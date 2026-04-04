@@ -1,0 +1,1461 @@
+/* ============================================================
+   Classic Mac OS — System 7 / Mac OS 9 "Platinum" Stylesheet
+   Portfolio Site: Poetry · Music · Other Works · About
+   ============================================================ */
+
+/* ============================================================
+   CSS CUSTOM PROPERTIES (VARIABLES)
+   ============================================================ */
+
+:root {
+  --mac-bg:                 #BBBBBB;
+  --mac-desktop:            #408080;
+  --mac-black:              #000000;
+  --mac-white:              #FFFFFF;
+  --mac-light:              #DDDDDD;
+  --mac-shadow:             #888888;
+  --mac-title-stripe-light: #FFFFFF;
+  --mac-title-stripe-dark:  #888888;
+  --mac-accent:             #000080;
+
+  /* Gradient shortcuts */
+  --title-inactive: repeating-linear-gradient(
+    to bottom,
+    #FFFFFF 0px,
+    #FFFFFF 1px,
+    #AAAAAA 1px,
+    #AAAAAA 2px
+  );
+  --title-active: repeating-linear-gradient(
+    to bottom,
+    #FFFFFF 0px,
+    #FFFFFF 1px,
+    #888888 1px,
+    #888888 2px
+  );
+
+  /* Typography */
+  --font-ui:   Chicago, Charcoal, Geneva, 'Lucida Grande', Arial, sans-serif;
+  --font-serif: Georgia, 'Times New Roman', Times, serif;
+
+  /* Font sizes */
+  --fs-ui:    12px;
+  --fs-body:  14px;
+  --fs-small: 11px;
+}
+
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  margin:     0;
+  padding:    0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: var(--fs-ui);
+}
+
+body {
+  font-family:  var(--font-ui);
+  font-size:    var(--fs-body);
+  background:   var(--mac-desktop);
+  min-height:   100vh;
+  overflow:     hidden;
+  cursor:       default;
+  color:        var(--mac-black);
+  -webkit-font-smoothing: none;   /* crisp, pixel-like rendering */
+  font-smooth: never;
+}
+
+a {
+  color: var(--mac-accent);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+a:hover {
+  color: var(--mac-black);
+}
+
+button,
+[role="button"],
+label[for],
+.menu-item,
+.menu-logo,
+.dropdown-item,
+.dock-item,
+.desktop-icon,
+.mac-btn,
+.win-btn,
+.mac-list tr,
+.back-btn {
+  cursor: pointer;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+/* ============================================================
+   FOCUS / ACCESSIBILITY
+   ============================================================ */
+
+:focus-visible {
+  outline: 2px solid var(--mac-accent);
+  outline-offset: 1px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+
+/* ============================================================
+   MENU BAR  (#menubar)
+   ============================================================ */
+
+#menubar {
+  position:        fixed;
+  top:             0;
+  left:            0;
+  right:           0;
+  height:          22px;
+  background:      #EEEEEE;
+  border-bottom:   1px solid var(--mac-black);
+  z-index:         9999;
+  display:         flex;
+  align-items:     center;
+  user-select:     none;
+  -webkit-user-select: none;
+}
+
+.menu-logo {
+  padding:   0 10px;
+  font-size: 16px;
+  cursor:    pointer;
+  line-height: 22px;
+  flex-shrink: 0;
+}
+
+.menu-logo:hover,
+.menu-logo.active {
+  background: var(--mac-black);
+  color:      var(--mac-white);
+}
+
+.menu-item {
+  position:    relative;
+  padding:     2px 10px;
+  font-size:   var(--fs-ui);
+  font-weight: bold;
+  cursor:      pointer;
+  line-height: 18px;
+  white-space: nowrap;
+}
+
+.menu-item:hover,
+.menu-item.active {
+  background: var(--mac-black);
+  color:      var(--mac-white);
+}
+
+#clock {
+  margin-left:  auto;
+  padding-right: 10px;
+  font-size:    var(--fs-ui);
+  white-space:  nowrap;
+  color:        var(--mac-black);
+}
+
+
+/* ============================================================
+   MENU DROPDOWNS  (.menu-dropdown)
+   ============================================================ */
+
+.menu-dropdown {
+  position:   absolute;
+  top:        22px;
+  left:       0;
+  background: var(--mac-white);
+  border:     1px solid var(--mac-black);
+  box-shadow: 2px 2px 0 var(--mac-black);
+  z-index:    10000;
+  min-width:  160px;
+  display:    none;
+}
+
+.menu-dropdown.open {
+  display: block;
+}
+
+.dropdown-item {
+  padding:     4px 20px;
+  cursor:      pointer;
+  white-space: nowrap;
+  font-size:   var(--fs-ui);
+  font-weight: normal;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background: var(--mac-black);
+  color:      var(--mac-white);
+}
+
+.dropdown-item.disabled {
+  color:  var(--mac-shadow);
+  cursor: default;
+}
+
+.dropdown-item.disabled:hover {
+  background: transparent;
+  color:      var(--mac-shadow);
+}
+
+.dropdown-divider {
+  height:     1px;
+  background: var(--mac-shadow);
+  margin:     4px 0;
+}
+
+
+/* ============================================================
+   DESKTOP  (#desktop)
+   ============================================================ */
+
+#desktop {
+  position:   fixed;
+  top:        22px;
+  left:       0;
+  right:      0;
+  bottom:     0;
+  overflow:   hidden;
+
+  /* Classic teal dither checkerboard */
+  background-color: var(--mac-desktop);
+  background-image: repeating-conic-gradient(#4A9090 0% 25%, #408080 0% 50%);
+  background-size: 2px 2px;
+}
+
+
+/* ============================================================
+   DESKTOP ICONS  (.desktop-icon)
+   ============================================================ */
+
+.desktop-icon {
+  position:    absolute;
+  width:       80px;
+  text-align:  center;
+  cursor:      pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  padding:     4px;
+}
+
+/* Stack icons in the top-right */
+.desktop-icon:nth-child(1) { top: 12px;  right: 12px; }
+.desktop-icon:nth-child(2) { top: 102px; right: 12px; }
+.desktop-icon:nth-child(3) { top: 192px; right: 12px; }
+.desktop-icon:nth-child(4) { top: 282px; right: 12px; }
+
+.icon-img {
+  display:     block;
+  width:       48px;
+  height:      48px;
+  margin:      0 auto 4px;
+  background:  var(--mac-white);
+  border:      1px solid var(--mac-black);
+  font-size:   32px;
+  line-height: 48px;
+  text-align:  center;
+  overflow:    hidden;
+}
+
+.desktop-icon.selected .icon-img {
+  filter: invert(1);
+}
+
+.icon-label {
+  display:     inline-block;
+  font-size:   var(--fs-small);
+  color:       var(--mac-white);
+  text-shadow: 1px 1px 0 var(--mac-black),
+               -1px -1px 0 var(--mac-black),
+               1px -1px 0 var(--mac-black),
+               -1px 1px 0 var(--mac-black);
+  word-break:  break-word;
+  line-height: 1.3;
+}
+
+.desktop-icon.selected .icon-label {
+  background:  var(--mac-accent);
+  color:       var(--mac-white);
+  text-shadow: none;
+  padding:     1px 3px;
+}
+
+
+/* ============================================================
+   MAC WINDOWS  (.mac-window)
+   ============================================================ */
+
+.mac-window {
+  position:      absolute;
+  min-width:     320px;
+  min-height:    200px;
+  background:    var(--mac-bg);
+  border:        2px solid var(--mac-black);
+  border-radius: 6px;
+  box-shadow:    3px 3px 0 rgba(0, 0, 0, 0.4);
+  z-index:       100;
+  display:       none;
+  flex-direction: column;
+  transition:    none;
+  overflow:      hidden;
+}
+
+.mac-window.open {
+  display: flex;
+}
+
+.mac-window.active {
+  z-index: 200;
+}
+
+/* Staggered default positions (overridden by inline styles in HTML) */
+#window-poetry  { top: 40px;  left: 40px;  width: 520px; }
+#window-music   { top: 60px;  left: 100px; width: 540px; }
+#window-works   { top: 80px;  left: 160px; width: 500px; }
+#window-about   { top: 100px; left: 220px; width: 460px; }
+
+
+/* ============================================================
+   TITLE BAR  (.title-bar)
+   ============================================================ */
+
+.title-bar {
+  height:        22px;
+  min-height:    22px;
+  display:       flex;
+  align-items:   center;
+  cursor:        grab;
+  border-bottom: 1px solid var(--mac-black);
+  border-radius: 4px 4px 0 0;
+  background:    var(--title-inactive);
+  user-select:   none;
+  -webkit-user-select: none;
+  flex-shrink:   0;
+}
+
+.title-bar:active {
+  cursor: grabbing;
+}
+
+.mac-window.active .title-bar {
+  background: var(--title-active);
+}
+
+/* Window control buttons container */
+.win-controls {
+  display:    flex;
+  gap:        4px;
+  padding:    0 6px;
+  flex-shrink: 0;
+}
+
+/* Window control buttons */
+.win-btn {
+  width:       14px;
+  height:      14px;
+  border:      1px solid var(--mac-black);
+  background:  var(--mac-bg);
+  cursor:      pointer;
+  flex-shrink: 0;
+  position:    relative;
+  display:     flex;
+  align-items: center;
+  justify-content: center;
+  font-size:   10px;
+  line-height: 1;
+  border-radius: 0;
+}
+
+.win-btn::after {
+  display:     none;
+  font-size:   9px;
+  font-weight: bold;
+  color:       var(--mac-black);
+  line-height: 1;
+}
+
+.win-btn:hover::after {
+  display: block;
+}
+
+.close-btn::after    { content: '×'; }
+.collapse-btn::after { content: '–'; }
+.zoom-btn::after     { content: '+'; }
+
+.win-btn:active {
+  background: var(--mac-shadow);
+}
+
+/* Title text */
+.title-text {
+  flex:          1;
+  text-align:    center;
+  font-weight:   bold;
+  font-size:     var(--fs-ui);
+  background:    var(--mac-bg);
+  padding:       1px 10px;
+  white-space:   nowrap;
+  overflow:      hidden;
+  text-overflow: ellipsis;
+  border-left:   1px solid var(--mac-shadow);
+  border-right:  1px solid var(--mac-shadow);
+  height:        100%;
+  display:       flex;
+  align-items:   center;
+  justify-content: center;
+}
+
+.mac-window.active .title-text {
+  background: #CCCCCC;
+}
+
+/* Spacer on right to balance controls */
+.title-spacer {
+  width:       52px;   /* mirrors .win-controls width */
+  flex-shrink: 0;
+}
+
+
+/* ============================================================
+   WINDOW CONTENT  (.window-content)
+   ============================================================ */
+
+.window-content {
+  background:  var(--mac-white);
+  overflow-y:  auto;
+  flex:        1;
+  padding:     16px;
+  max-height:  calc(80vh - 22px);
+  font-size:   var(--fs-body);
+  line-height: 1.5;
+}
+
+/* Classic Mac scrollbars */
+.window-content {
+  scrollbar-width: auto;
+  scrollbar-color: #AAAAAA #CCCCCC;
+}
+
+.window-content::-webkit-scrollbar {
+  width: 16px;
+}
+
+.window-content::-webkit-scrollbar-track {
+  background:   #CCCCCC;
+  border-left:  1px solid var(--mac-black);
+}
+
+.window-content::-webkit-scrollbar-thumb {
+  background:    #AAAAAA;
+  border:        1px solid var(--mac-black);
+  border-radius: 0;
+}
+
+.window-content::-webkit-scrollbar-thumb:hover {
+  background: #999999;
+}
+
+.window-content::-webkit-scrollbar-button {
+  background:    #CCCCCC;
+  border:        1px solid var(--mac-black);
+  height:        16px;
+  display:       block;
+}
+
+.window-content::-webkit-scrollbar-button:vertical:decrement {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpolygon points='8,4 13,12 3,12' fill='%23000'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.window-content::-webkit-scrollbar-button:vertical:increment {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpolygon points='8,12 13,4 3,4' fill='%23000'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.window-content::-webkit-scrollbar-corner {
+  background: #CCCCCC;
+}
+
+
+/* ============================================================
+   WINDOW STATUS BAR  (.window-status-bar)
+   ============================================================ */
+
+.window-status-bar {
+  height:          18px;
+  min-height:      18px;
+  background:      #CCCCCC;
+  border-top:      1px solid var(--mac-black);
+  font-size:       var(--fs-small);
+  padding:         2px 8px;
+  display:         flex;
+  justify-content: space-between;
+  align-items:     center;
+  flex-shrink:     0;
+  user-select:     none;
+  -webkit-user-select: none;
+}
+
+.status-left,
+.status-right {
+  white-space: nowrap;
+  overflow:    hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* ============================================================
+   WINDOW RESIZE HANDLE  (.window-resize)
+   ============================================================ */
+
+.window-resize {
+  position:   absolute;
+  bottom:     18px;         /* sits above status bar */
+  right:      0;
+  width:      16px;
+  height:     16px;
+  cursor:     se-resize;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--mac-black)  0px, var(--mac-black)  1px,
+    transparent       1px, transparent        3px
+  );
+  border-left: 1px solid var(--mac-shadow);
+  border-top:  1px solid var(--mac-shadow);
+  z-index:     10;
+}
+
+
+/* ============================================================
+   MAC-STYLE LIST VIEW  (.mac-list)
+   ============================================================ */
+
+.mac-list {
+  width:           100%;
+  border:          1px solid var(--mac-black);
+  border-collapse: collapse;
+  font-size:       var(--fs-ui);
+}
+
+.mac-list thead tr {
+  background:    #CCCCCC;
+  border-bottom: 1px solid var(--mac-black);
+}
+
+.mac-list thead th {
+  font-weight:  bold;
+  font-size:    var(--fs-ui);
+  padding:      4px 8px;
+  text-align:   left;
+  border-right: 1px solid var(--mac-shadow);
+  cursor:       default;
+  white-space:  nowrap;
+}
+
+.mac-list thead th:last-child {
+  border-right: none;
+}
+
+.mac-list tbody tr {
+  border-bottom: 1px solid #CCCCCC;
+  cursor:        pointer;
+}
+
+.mac-list tbody tr:last-child {
+  border-bottom: none;
+}
+
+.mac-list tbody td {
+  padding:     6px 8px;
+  white-space: nowrap;
+  overflow:    hidden;
+  text-overflow: ellipsis;
+  max-width:   200px;
+}
+
+.mac-list tbody tr:hover,
+.mac-list tbody tr:focus,
+.mac-list tbody tr.selected {
+  background: var(--mac-accent);
+  color:      var(--mac-white);
+  outline:    none;
+}
+
+.mac-list tbody tr:hover td,
+.mac-list tbody tr.selected td {
+  color: var(--mac-white);
+}
+
+
+/* ============================================================
+   POEM VIEWER  (.poem-viewer)
+   ============================================================ */
+
+.poem-viewer {
+  background:  var(--mac-white);
+  padding:     20px;
+  font-family: var(--font-serif);
+  font-size:   15px;
+  line-height: 1.8;
+  display:     none;
+}
+
+.poem-viewer.active {
+  display: block;
+}
+
+.poem-title {
+  font-family:   var(--font-serif);
+  font-size:     18px;
+  font-weight:   bold;
+  margin-bottom: 4px;
+}
+
+.poem-meta {
+  font-family:   var(--font-ui);
+  font-size:     var(--fs-small);
+  color:         #555555;
+  margin-bottom: 16px;
+}
+
+.poem-body {
+  white-space:   pre-wrap;
+  word-break:    break-word;
+}
+
+
+/* ============================================================
+   AUDIO PLAYER  (.mac-audio-player)
+   ============================================================ */
+
+.mac-audio-player {
+  border:        2px solid var(--mac-black);
+  background:    #CCCCCC;
+  padding:       12px;
+  margin-bottom: 12px;
+  border-radius: 2px;
+  box-shadow:
+    inset  2px  2px 0 var(--mac-white),
+    inset -2px -2px 0 var(--mac-shadow);
+}
+
+.mac-audio-player:last-child {
+  margin-bottom: 0;
+}
+
+.track-title {
+  font-weight:   bold;
+  font-size:     13px;
+  margin-bottom: 8px;
+  font-family:   var(--font-ui);
+}
+
+.track-meta {
+  font-size:     var(--fs-small);
+  color:         #555555;
+  margin-bottom: 8px;
+  font-family:   var(--font-ui);
+}
+
+.mac-audio-player audio {
+  width:        100%;
+  height:       28px;
+  accent-color: var(--mac-black);
+  display:      block;
+  margin-bottom: 0;
+}
+
+.track-desc {
+  font-size:   var(--fs-ui);
+  margin-top:  8px;
+  color:       #333333;
+  line-height: 1.5;
+}
+
+
+/* ============================================================
+   MAC-STYLE BUTTONS  (.mac-btn)
+   ============================================================ */
+
+.mac-btn {
+  display:       inline-block;
+  background:    #CCCCCC;
+  border:        1px solid var(--mac-black);
+  box-shadow:
+    inset  1px  1px 0 var(--mac-white),
+    inset -1px -1px 0 #666666;
+  padding:       4px 16px;
+  font-family:   var(--font-ui);
+  font-size:     var(--fs-ui);
+  cursor:        pointer;
+  border-radius: 0;
+  color:         var(--mac-black);
+  text-align:    center;
+  white-space:   nowrap;
+  user-select:   none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+}
+
+.mac-btn:hover {
+  background: var(--mac-light);
+}
+
+.mac-btn:active,
+.mac-btn.pressed {
+  box-shadow:
+    inset  1px  1px 0 #666666,
+    inset -1px -1px 0 var(--mac-white);
+  background: #BBBBBB;
+}
+
+/* Default / primary button — thicker border */
+.mac-btn.default-btn {
+  border-width: 3px;
+  font-weight:  bold;
+}
+
+.mac-btn:focus-visible {
+  outline: 2px solid var(--mac-accent);
+  outline-offset: 2px;
+}
+
+/* Back button */
+.back-btn {
+  display:       none;
+  margin-bottom: 12px;
+}
+
+.back-btn.visible {
+  display: inline-block;
+}
+
+
+/* ============================================================
+   ABOUT WINDOW  (.about-content)
+   ============================================================ */
+
+.about-content {
+  text-align:  center;
+  padding:     8px 0;
+}
+
+.about-avatar {
+  width:         64px;
+  height:        64px;
+  border:        2px solid var(--mac-black);
+  background:    var(--mac-bg);
+  margin:        0 auto 16px;
+  display:       flex;
+  align-items:   center;
+  justify-content: center;
+  font-size:     36px;
+  box-shadow:
+    inset  2px  2px 0 var(--mac-white),
+    inset -2px -2px 0 var(--mac-shadow);
+}
+
+.about-name {
+  font-family:   var(--font-serif);
+  font-size:     20px;
+  font-weight:   bold;
+  margin-bottom: 4px;
+}
+
+.about-tagline {
+  font-size:     var(--fs-small);
+  color:         #555555;
+  margin-bottom: 16px;
+  font-family:   var(--font-ui);
+}
+
+.about-bio {
+  font-family: var(--font-serif);
+  font-size:   var(--fs-body);
+  line-height: 1.7;
+  text-align:  left;
+  color:       #222222;
+}
+
+.about-bio p + p {
+  margin-top: 12px;
+}
+
+.about-links {
+  margin-top:  20px;
+  display:     flex;
+  gap:         8px;
+  justify-content: center;
+  flex-wrap:   wrap;
+}
+
+.about-divider {
+  border:        none;
+  border-top:    1px solid #CCCCCC;
+  margin:        16px 0;
+}
+
+
+/* ============================================================
+   SECTION HEADERS (inside windows)
+   ============================================================ */
+
+.window-section-header {
+  font-size:     var(--fs-ui);
+  font-weight:   bold;
+  background:    #CCCCCC;
+  border-bottom: 1px solid var(--mac-black);
+  padding:       4px 8px;
+  margin:        -16px -16px 12px -16px;  /* bleed to edges of .window-content */
+  display:       flex;
+  align-items:   center;
+  gap:           8px;
+  user-select:   none;
+  -webkit-user-select: none;
+}
+
+.window-section-header .section-icon {
+  font-size: 14px;
+}
+
+.window-subsection {
+  font-size:     var(--fs-ui);
+  font-weight:   bold;
+  margin:        16px 0 8px;
+  padding-bottom: 2px;
+  border-bottom:  1px solid #CCCCCC;
+}
+
+
+/* ============================================================
+   INSET / WELL (3-D recessed box)
+   ============================================================ */
+
+.mac-well {
+  background: var(--mac-white);
+  border:     1px solid var(--mac-black);
+  box-shadow:
+    inset  1px  1px 0 var(--mac-shadow),
+    inset -1px -1px 0 var(--mac-white);
+  padding: 8px;
+}
+
+/* Raised box (like a panel / group box) */
+.mac-raised {
+  background: var(--mac-bg);
+  border:     1px solid var(--mac-black);
+  box-shadow:
+    inset  1px  1px 0 var(--mac-white),
+    inset -1px -1px 0 var(--mac-shadow);
+  padding: 8px;
+}
+
+
+/* ============================================================
+   PROGRESS BAR  (.mac-progress)
+   ============================================================ */
+
+.mac-progress {
+  width:      100%;
+  height:     16px;
+  background: var(--mac-white);
+  border:     1px solid var(--mac-black);
+  box-shadow:
+    inset 1px 1px 0 var(--mac-shadow);
+  overflow:   hidden;
+  position:   relative;
+}
+
+.mac-progress-bar {
+  height:     100%;
+  background: repeating-linear-gradient(
+    to right,
+    var(--mac-black) 0px,
+    var(--mac-black) 8px,
+    var(--mac-white) 8px,
+    var(--mac-white) 10px
+  );
+  transition: width 0.3s linear;
+}
+
+
+/* ============================================================
+   DIALOG / ALERT BOXES
+   ============================================================ */
+
+.mac-dialog-overlay {
+  position:   fixed;
+  inset:      0;
+  background: transparent;
+  z-index:    8000;
+  display:    none;
+}
+
+.mac-dialog-overlay.open {
+  display: block;
+}
+
+.mac-dialog {
+  position:      absolute;
+  top:           50%;
+  left:          50%;
+  transform:     translate(-50%, -50%);
+  background:    var(--mac-bg);
+  border:        2px solid var(--mac-black);
+  border-radius: 6px;
+  box-shadow:    4px 4px 0 rgba(0, 0, 0, 0.5);
+  min-width:     280px;
+  max-width:     420px;
+  padding:       20px;
+  z-index:       9000;
+}
+
+.mac-dialog-icon {
+  font-size:     40px;
+  margin-bottom: 12px;
+  display:       block;
+  text-align:    center;
+}
+
+.mac-dialog-message {
+  font-size:   var(--fs-body);
+  margin-bottom: 16px;
+  text-align:  center;
+  line-height: 1.5;
+}
+
+.mac-dialog-buttons {
+  display:         flex;
+  justify-content: center;
+  gap:             8px;
+}
+
+
+/* ============================================================
+   MOBILE DOCK  (#mobile-dock)
+   ============================================================ */
+
+#mobile-dock {
+  display:          none;   /* hidden on desktop */
+  position:         fixed;
+  bottom:           0;
+  left:             0;
+  right:            0;
+  background:       rgba(255, 255, 255, 0.92);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter:  blur(4px);
+  border-top:       1px solid var(--mac-black);
+  justify-content:  space-around;
+  align-items:      center;
+  padding:          8px 0;
+  z-index:          9000;
+  user-select:      none;
+  -webkit-user-select: none;
+}
+
+.dock-item {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:            4px;
+  cursor:         pointer;
+  padding:        4px 8px;
+  flex:           1;
+  max-width:      80px;
+}
+
+.dock-item-icon {
+  font-size: 28px;
+  line-height: 1;
+  display:   block;
+}
+
+.dock-item-label {
+  font-size:   10px;
+  color:       #333333;
+  text-align:  center;
+  white-space: nowrap;
+}
+
+.dock-item:hover .dock-item-icon,
+.dock-item.active .dock-item-icon {
+  transform: scale(1.15);
+}
+
+.dock-item.active .dock-item-label {
+  font-weight: bold;
+  color:       var(--mac-black);
+}
+
+
+/* ============================================================
+   SCROLLABLE LIST WRAPPER
+   ============================================================ */
+
+.list-view-container {
+  display: block;
+}
+
+.list-view-container.hidden {
+  display: none;
+}
+
+.detail-view-container {
+  display: none;
+}
+
+.detail-view-container.visible {
+  display: block;
+}
+
+
+/* ============================================================
+   TYPOGRAPHY HELPERS
+   ============================================================ */
+
+.text-center { text-align: center; }
+.text-small  { font-size: var(--fs-small); }
+.text-muted  { color: #555555; }
+.text-bold   { font-weight: bold; }
+
+.mt-4  { margin-top:    4px; }
+.mt-8  { margin-top:    8px; }
+.mt-12 { margin-top:   12px; }
+.mt-16 { margin-top:   16px; }
+.mb-4  { margin-bottom: 4px; }
+.mb-8  { margin-bottom: 8px; }
+.mb-12 { margin-bottom: 12px; }
+.mb-16 { margin-bottom: 16px; }
+
+
+/* ============================================================
+   UTILITY
+   ============================================================ */
+
+.hidden      { display: none !important; }
+.sr-only {
+  position:  absolute;
+  width:     1px;
+  height:    1px;
+  padding:   0;
+  margin:    -1px;
+  overflow:  hidden;
+  clip:      rect(0, 0, 0, 0);
+  border:    0;
+}
+
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.flex        { display: flex; }
+.flex-col    { flex-direction: column; }
+.gap-4       { gap: 4px; }
+.gap-8       { gap: 8px; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.w-full      { width: 100%; }
+
+
+/* ============================================================
+   WINDOW MINIMISED STATE
+   ============================================================ */
+
+.mac-window.minimised .window-content,
+.mac-window.minimised .window-status-bar,
+.mac-window.minimised .window-resize {
+  display: none;
+}
+
+.mac-window.minimised {
+  min-height: unset;
+  height:     auto;
+}
+
+
+/* ============================================================
+   DRAGGING STATE
+   ============================================================ */
+
+.mac-window.dragging {
+  opacity:    0.92;
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.35);
+}
+
+body.dragging-window {
+  cursor: grabbing !important;
+}
+
+body.dragging-window * {
+  cursor: grabbing !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+
+/* ============================================================
+   RESIZING STATE
+   ============================================================ */
+
+body.resizing-window {
+  cursor: se-resize !important;
+}
+
+body.resizing-window * {
+  cursor:     se-resize !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+
+/* ============================================================
+   WORKS / OTHER WORKS SECTION
+   ============================================================ */
+
+.works-grid {
+  display:               grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap:                   8px;
+  padding:               4px 0;
+}
+
+.works-card {
+  border:      1px solid var(--mac-black);
+  background:  var(--mac-bg);
+  box-shadow:
+    inset  1px  1px 0 var(--mac-white),
+    inset -1px -1px 0 var(--mac-shadow);
+  padding:     8px;
+  cursor:      pointer;
+}
+
+.works-card:hover {
+  background: var(--mac-light);
+}
+
+.works-card-icon {
+  font-size:     24px;
+  margin-bottom: 6px;
+  display:       block;
+}
+
+.works-card-title {
+  font-weight:   bold;
+  font-size:     var(--fs-ui);
+  margin-bottom: 4px;
+}
+
+.works-card-meta {
+  font-size: var(--fs-small);
+  color:     #555555;
+}
+
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+
+.empty-state {
+  text-align:  center;
+  padding:     40px 20px;
+  color:       #888888;
+}
+
+.empty-state-icon {
+  font-size:     48px;
+  margin-bottom: 12px;
+  display:       block;
+}
+
+.empty-state-text {
+  font-size: var(--fs-ui);
+}
+
+
+/* ============================================================
+   ============================================================
+   RESPONSIVE — MOBILE  (max-width: 768px)
+   ============================================================
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+  /* ── Body ── */
+  body {
+    overflow: auto;
+  }
+
+  /* ── Menu bar ── */
+  #menubar {
+    padding: 0;
+  }
+
+  .menu-item.hide-mobile {
+    display: none;
+  }
+
+  #clock {
+    font-size: 11px;
+    padding-right: 6px;
+  }
+
+  /* ── Desktop area ── */
+  #desktop {
+    position:    relative;
+    top:         22px;
+    overflow-y:  auto;
+    overflow-x:  hidden;
+    display:     block;
+    padding:     16px 8px 80px;  /* bottom pad for dock */
+    height:      auto;
+    min-height:  calc(100vh - 22px);
+  }
+
+  /* ── Hide desktop icons on mobile ── */
+  .desktop-icon {
+    display: none;
+  }
+
+  /* ── Show mobile dock ── */
+  #mobile-dock {
+    display: flex;
+  }
+
+  /* ── Windows become stacked blocks ── */
+  .mac-window {
+    position:  relative !important;
+    top:       auto !important;
+    left:      auto !important;
+    right:     auto !important;
+    bottom:    auto !important;
+    width:     100% !important;
+    max-width: 100%;
+    min-width: unset;
+    margin-bottom: 16px;
+    display:   none;
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+  }
+
+  .mac-window.open {
+    display: flex;
+  }
+
+  /* Disable dragging on mobile */
+  .title-bar {
+    cursor: default;
+  }
+
+  /* ── Window content ── */
+  .window-content {
+    max-height: 60vh;
+    padding:    12px;
+  }
+
+  /* ── Window section header bleed fix ── */
+  .window-section-header {
+    margin: -12px -12px 12px -12px;
+  }
+
+  /* ── Hide resize handle on mobile ── */
+  .window-resize {
+    display: none;
+  }
+
+  /* ── Title bar controls ── */
+  .win-controls {
+    padding: 0 4px;
+    gap:     3px;
+  }
+
+  /* ── Audio player ── */
+  .mac-audio-player {
+    padding:       8px;
+    margin-bottom: 8px;
+  }
+
+  /* ── Works grid ── */
+  .works-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
+
+  /* ── Mac list table ── */
+  .mac-list tbody td {
+    padding:   4px 6px;
+    max-width: 120px;
+  }
+
+  /* ── About ── */
+  .about-links {
+    flex-direction: column;
+    align-items:    center;
+  }
+
+  /* ── Status bar ── */
+  .window-status-bar {
+    font-size: 10px;
+  }
+
+  /* ── Dock item sizing ── */
+  .dock-item-icon {
+    font-size: 24px;
+  }
+
+}
+
+
+/* ============================================================
+   RESPONSIVE — SMALL MOBILE  (max-width: 480px)
+   ============================================================ */
+
+@media (max-width: 480px) {
+
+  .window-content {
+    padding:    10px;
+    max-height: 55vh;
+  }
+
+  .window-section-header {
+    margin: -10px -10px 10px -10px;
+  }
+
+  .poem-viewer {
+    padding:   12px;
+    font-size: 14px;
+  }
+
+  .poem-title {
+    font-size: 16px;
+  }
+
+  .works-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .mac-dialog {
+    min-width: 240px;
+    max-width: 90vw;
+    padding:   16px;
+  }
+
+  .menu-item {
+    padding: 2px 6px;
+  }
+
+  #clock {
+    display: none;
+  }
+
+}
+
+
+/* ============================================================
+   RESPONSIVE — LARGE DESKTOP  (min-width: 1200px)
+   ============================================================ */
+
+@media (min-width: 1200px) {
+
+  #window-poetry  { width: 580px; }
+  #window-music   { width: 600px; }
+  #window-works   { width: 560px; }
+  #window-about   { width: 500px; }
+
+  .window-content {
+    max-height: calc(85vh - 22px);
+  }
+
+}
+
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration:        0.001ms !important;
+    animation-iteration-count: 1       !important;
+    transition-duration:       0.001ms !important;
+    scroll-behavior:           auto    !important;
+  }
+
+  .mac-progress-bar {
+    transition: none !important;
+  }
+
+  .dock-item:hover .dock-item-icon,
+  .dock-item.active .dock-item-icon {
+    transform: none;
+  }
+}
+
+
+/* ============================================================
+   PRINT
+   ============================================================ */
+
+@media print {
+  #menubar,
+  #mobile-dock,
+  .desktop-icon,
+  .win-controls,
+  .window-status-bar,
+  .window-resize {
+    display: none !important;
+  }
+
+  body {
+    background: var(--mac-white);
+    overflow:   auto;
+  }
+
+  #desktop {
+    position: static;
+    overflow: visible;
+    padding:  0;
+  }
+
+  .mac-window {
+    position:      relative !important;
+    display:       flex !important;
+    width:         100% !important;
+    box-shadow:    none;
+    border:        1px solid var(--mac-black);
+    margin-bottom: 24px;
+    break-inside:  avoid;
+  }
+
+  .window-content {
+    max-height: none;
+    overflow:   visible;
+  }
+}
