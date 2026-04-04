@@ -18,6 +18,7 @@ const MENUBAR_HEIGHT = 22;
 function updateClock() {
   const el = document.getElementById("clock");
   if (!el) return;
+
   el.textContent = new Date().toLocaleTimeString([], {
     hour: "numeric",
     minute: "2-digit",
@@ -38,8 +39,10 @@ function getWin(name) {
 function openWindow(name) {
   const win = getWin(name);
   if (!win) return;
+
   win.classList.add("open");
   focusWindow(name);
+
   if (window.innerWidth <= 768) {
     win.scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -48,27 +51,28 @@ function openWindow(name) {
 function closeWindow(name) {
   const win = getWin(name);
   if (!win) return;
+
   win.classList.remove("open", "active");
 }
 
 function focusWindow(name) {
-  // Remove active from every window
   WINDOWS.forEach((n) => {
     const w = getWin(n);
     if (w) w.classList.remove("active");
   });
-  // Focus the target
+
   const win = getWin(name);
   if (!win) return;
+
   win.classList.add("active");
-  // Raise z-index (inline overrides CSS class z-index)
   zCounter += 10;
-  win.style.zIndex = zCounter;
+  win.style.zIndex = String(zCounter);
 }
 
 function toggleWindow(name) {
   const win = getWin(name);
   if (!win) return;
+
   if (win.classList.contains("open")) {
     focusWindow(name);
   } else {
@@ -82,78 +86,96 @@ function closeAllWindows() {
 
 function arrangeWindows() {
   let i = 0;
+
   WINDOWS.forEach((name) => {
     const win = getWin(name);
-    if (win && win.classList.contains("open")) {
-      win.style.top = 50 + i * 30 + "px";
-      win.style.left = 60 + i * 40 + "px";
-      i++;
-    }
+    if (!win || !win.classList.contains("open")) return;
+
+    win.style.top = 50 + i * 30 + "px";
+    win.style.left = 60 + i * 40 + "px";
+    i += 1;
   });
 }
 
 /* ============================================================
-   3. WINDOW CONTROLS (title-bar buttons)
+   3. WINDOW CONTROL BUTTONS
    ============================================================ */
 
 function handleWinBtn(btn) {
   const win = btn.closest(".mac-window");
   if (!win) return;
+
   const name = win.id.replace("window-", "");
   const action = btn.dataset.action;
 
   if (action === "close") {
     closeWindow(name);
-  } else if (action === "collapse") {
-    // CSS hides .window-content/.window-status-bar/.window-resize on .minimised
+    return;
+  }
+
+  if (action === "collapse") {
     win.classList.toggle("minimised");
-  } else if (action === "zoom") {
+    return;
+  }
+
+  if (action === "zoom") {
     if (win.classList.contains("zoomed")) {
-      // Restore saved geometry
       win.style.top = win.dataset.savedTop || "";
       win.style.left = win.dataset.savedLeft || "";
       win.style.width = win.dataset.savedWidth || "";
       win.style.height = win.dataset.savedHeight || "";
       win.classList.remove("zoomed");
-    } else {
-      // Save current geometry
-      win.dataset.savedTop = win.style.top;
-      win.dataset.savedLeft = win.style.left;
-      win.dataset.savedWidth = win.style.width;
-      win.dataset.savedHeight = win.style.height;
-      // Maximize
-      win.style.top = "30px";
-      win.style.left = "10px";
-      win.style.width = "calc(100vw - 20px)";
-      win.style.height = "calc(100vh - 52px)";
-      win.classList.add("zoomed");
+      return;
     }
+
+    win.dataset.savedTop = win.style.top;
+    win.dataset.savedLeft = win.style.left;
+    win.dataset.savedWidth = win.style.width;
+    win.dataset.savedHeight = win.style.height;
+
+    win.style.top = "30px";
+    win.style.left = "10px";
+    win.style.width = "calc(100vw - 20px)";
+    win.style.height = "calc(100vh - 52px)";
+    win.classList.add("zoomed");
   }
 }
 
 /* ============================================================
-   4. WINDOW DRAGGING (desktop only — width > 768)
+   4. DRAGGING
    ============================================================ */
 
 let dragState = null;
 
+function getPointerClientPos(e) {
+  if (e.touches && e.touches[0]) {
+    return {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+    };
+  }
+
+  return {
+    x: e.clientX,
+    y: e.clientY,
+  };
+}
+
 function onDragStart(e) {
   if (window.innerWidth <= 768) return;
-  // Ignore clicks on the control buttons
   if (e.target.closest(".win-btn")) return;
 
   const titleBar = e.currentTarget;
   const win = titleBar.closest(".mac-window");
   if (!win) return;
 
-  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  const pointer = getPointerClientPos(e);
   const rect = win.getBoundingClientRect();
 
   dragState = {
     win,
-    offsetX: clientX - rect.left,
-    offsetY: clientY - rect.top,
+    offsetX: pointer.x - rect.left,
+    offsetY: pointer.y - rect.top,
   };
 
   focusWindow(win.id.replace("window-", ""));
@@ -165,16 +187,13 @@ function onDragStart(e) {
 function onDragMove(e) {
   if (!dragState) return;
 
-  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
+  const pointer = getPointerClientPos(e);
   const w = dragState.win;
-  let newTop = clientY - dragState.offsetY;
-  let newLeft = clientX - dragState.offsetX;
 
-  // Can't drag above the menu bar
+  let newTop = pointer.y - dragState.offsetY;
+  let newLeft = pointer.x - dragState.offsetX;
+
   newTop = Math.max(MENUBAR_HEIGHT, newTop);
-  // Keep at least 50px of the window edge on-screen
   newLeft = Math.max(-(w.offsetWidth - 50), newLeft);
   newLeft = Math.min(window.innerWidth - 50, newLeft);
   newTop = Math.min(window.innerHeight - 30, newTop);
@@ -185,19 +204,21 @@ function onDragMove(e) {
 
 function onDragEnd() {
   if (!dragState) return;
+
   dragState.win.classList.remove("dragging");
-  dragState = null;
   document.body.classList.remove("dragging-window");
+  dragState = null;
 }
 
 /* ============================================================
-   5. WINDOW RESIZING (desktop only)
+   5. RESIZING
    ============================================================ */
 
 let resizeState = null;
 
 function onResizeStart(e) {
   if (window.innerWidth <= 768) return;
+
   const win = e.currentTarget.closest(".mac-window");
   if (!win) return;
 
@@ -215,15 +236,18 @@ function onResizeStart(e) {
 
 function onResizeMove(e) {
   if (!resizeState) return;
+
   const { win, startX, startY, startW, startH } = resizeState;
   const newW = Math.max(280, startW + (e.clientX - startX));
   const newH = Math.max(180, startH + (e.clientY - startY));
+
   win.style.width = newW + "px";
   win.style.height = newH + "px";
 }
 
 function onResizeEnd() {
   if (!resizeState) return;
+
   resizeState = null;
   document.body.classList.remove("resizing-window");
 }
@@ -239,10 +263,9 @@ function initDesktopIcons() {
   icons.forEach((icon) => {
     let clickTimer = null;
 
-    // Single click → select
     icon.addEventListener("click", (e) => {
       e.stopPropagation();
-      // Suppress single-click action when it's actually the first of a dblclick
+
       clearTimeout(clickTimer);
       clickTimer = setTimeout(() => {
         icons.forEach((i) => i.classList.remove("selected"));
@@ -250,7 +273,6 @@ function initDesktopIcons() {
       }, 200);
     });
 
-    // Double click → open window
     icon.addEventListener("dblclick", (e) => {
       e.stopPropagation();
       clearTimeout(clickTimer);
@@ -258,7 +280,6 @@ function initDesktopIcons() {
       openWindow(icon.dataset.window);
     });
 
-    // Keyboard: Enter or Space → open window
     icon.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
@@ -267,7 +288,6 @@ function initDesktopIcons() {
     });
   });
 
-  // Click on bare desktop → deselect all icons
   if (desktop) {
     desktop.addEventListener("click", () => {
       icons.forEach((i) => i.classList.remove("selected"));
@@ -286,13 +306,14 @@ function initDock() {
 }
 
 /* ============================================================
-   8. MENU BAR DROPDOWNS
+   8. MENUS
    ============================================================ */
 
 function closeAllDropdowns() {
   document
     .querySelectorAll(".menu-dropdown")
     .forEach((d) => d.classList.remove("open"));
+
   document
     .querySelectorAll(".menu-item, .menu-logo")
     .forEach((m) => m.classList.remove("active"));
@@ -306,6 +327,7 @@ function openDropdown(dropdownEl, triggerEl) {
 
 function handleDropdownAction(action) {
   closeAllDropdowns();
+
   switch (action) {
     case "open-poetry":
       openWindow("poetry");
@@ -325,11 +347,12 @@ function handleDropdownAction(action) {
     case "close-all":
       closeAllWindows();
       break;
+    default:
+      break;
   }
 }
 
 function initMenuBar() {
-  // ── Apple menu ──────────────────────────────────────────
   const appleTrigger = document.getElementById("apple-menu-trigger");
   const appleDropdown = document.getElementById("apple-dropdown");
 
@@ -340,12 +363,13 @@ function initMenuBar() {
       isOpen ? closeAllDropdowns() : openDropdown(appleDropdown, appleTrigger);
     });
 
-    // Apple-menu items (matched by text — no data-action on these)
     appleDropdown.querySelectorAll(".dropdown-item").forEach((item) => {
-      if (item.id === "menu-github") return; // handled separately
+      if (item.id === "menu-github") return;
+
       item.addEventListener("click", (e) => {
         e.stopPropagation();
         closeAllDropdowns();
+
         const text = item.textContent.trim();
         if (text === "About This Site") openWindow("about");
         else if (text === "Poetry") openWindow("poetry");
@@ -355,18 +379,17 @@ function initMenuBar() {
     });
   }
 
-  // ── Named menu items (File / View / Windows …) ──────────
   document.querySelectorAll(".menu-item[data-menu]").forEach((item) => {
     item.addEventListener("click", (e) => {
       e.stopPropagation();
       const dropdown = document.getElementById(item.dataset.menu + "-dropdown");
       if (!dropdown) return;
+
       const isOpen = dropdown.classList.contains("open");
       isOpen ? closeAllDropdowns() : openDropdown(dropdown, item);
     });
   });
 
-  // ── Dropdown items with data-action ─────────────────────
   document.querySelectorAll(".dropdown-item[data-action]").forEach((item) => {
     item.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -374,7 +397,6 @@ function initMenuBar() {
     });
   });
 
-  // ── GitHub link ─────────────────────────────────────────
   const githubItem = document.getElementById("menu-github");
   if (githubItem) {
     githubItem.addEventListener("click", (e) => {
@@ -384,99 +406,11 @@ function initMenuBar() {
     });
   }
 
-  // ── Click outside → close all ───────────────────────────
   document.addEventListener("click", closeAllDropdowns);
 }
 
 /* ============================================================
-   9. POETRY WINDOW — LIST & VIEWER
-   ============================================================ */
-
-function showPoem(index) {
-  const poem = window.POEMS[index];
-  if (!poem) return;
-  document.getElementById("poem-title").textContent = poem.title;
-  document.getElementById("poem-meta").textContent = poem.meta;
-  document.getElementById("poem-body").textContent = poem.body;
-  document.getElementById("poem-display").style.display = "block";
-  document.querySelector("#poetry-list").style.display = "none";
-  document.querySelector('[data-back="poetry"]').style.display = "inline-flex";
-  document.querySelector("#window-poetry .status-left").textContent =
-    poem.title;
-}
-
-function showPoetryList() {
-  document.getElementById("poem-display").style.display = "none";
-  document.querySelector("#poetry-list").style.display = "block";
-  document.querySelector('[data-back="poetry"]').style.display = "none";
-  const n = window.POEMS ? window.POEMS.length : 0;
-  document.querySelector("#window-poetry .status-left").textContent =
-    n + (n === 1 ? " poem" : " poems");
-}
-
-function initPoetryWindow() {
-  // List rows
-  document.querySelectorAll(".list-row[data-poem]").forEach((row) => {
-    const idx = parseInt(row.dataset.poem, 10);
-    row.addEventListener("click", () => showPoem(idx));
-    row.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        showPoem(idx);
-      }
-    });
-  });
-
-  // Back button
-  const backBtn = document.querySelector('[data-back="poetry"]');
-  if (backBtn) backBtn.addEventListener("click", showPoetryList);
-}
-
-/* ============================================================
-   10. WORKS WINDOW — GRID & VIEWER
-   ============================================================ */
-
-function showWork(index) {
-  const work = (window.WORKS || [])[index];
-  if (!work) return;
-  document.getElementById("works-v-icon").textContent = work.icon;
-  document.getElementById("works-v-type").textContent = work.type;
-  document.getElementById("works-v-title").textContent = work.title;
-  document.getElementById("works-v-year").textContent = work.year;
-  document.getElementById("works-v-body").textContent = work.body;
-  document.getElementById("works-display").style.display = "block";
-  document.getElementById("works-list-view").style.display = "none";
-  document.querySelector('[data-back="works"]').style.display = "inline-flex";
-  document.querySelector("#window-works .status-left").textContent = work.title;
-}
-
-function showWorksList() {
-  document.getElementById("works-display").style.display = "none";
-  document.getElementById("works-list-view").style.display = "block";
-  document.querySelector('[data-back="works"]').style.display = "none";
-  const n = window.WORKS ? window.WORKS.length : 0;
-  document.querySelector("#window-works .status-left").textContent =
-    n + " items";
-}
-
-function initWorksWindow() {
-  document.querySelectorAll(".works-card[data-work]").forEach((card) => {
-    const idx = parseInt(card.dataset.work, 10);
-    card.addEventListener("click", () => showWork(idx));
-    card.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        showWork(idx);
-      }
-    });
-  });
-
-  const backBtn = document.querySelector('[data-back="works"]');
-  if (backBtn) backBtn.addEventListener("click", showWorksList);
-}
-
-/* ============================================================
-   11. MARKDOWN POEM LOADING
+   9. HELPERS — FRONTMATTER / MARKDOWN / ESCAPING
    ============================================================ */
 
 function escapeHtml(str) {
@@ -487,94 +421,370 @@ function escapeHtml(str) {
 }
 
 function parseFrontmatter(text) {
-  // Strip UTF-8 BOM if present
-  const src = text.replace(/^\uFEFF/, "");
-  const parts = src.split("---");
-  // Expect: ['', ' fm content ', ' body content']
-  if (parts.length < 3) {
-    return { title: "Untitled", meta: "", body: src.trim() };
+  const src = String(text).replace(/^\uFEFF/, "");
+
+  if (!src.startsWith("---")) {
+    return { body: src.trim() };
   }
-  const fm = parts[1].trim();
-  const body = parts.slice(2).join("---").trim();
+
+  const endIndex = src.indexOf("\n---", 3);
+  if (endIndex === -1) {
+    return { body: src.trim() };
+  }
+
+  const fm = src.slice(3, endIndex).trim();
+  const body = src.slice(endIndex + 4).trim();
+
   const data = {};
   fm.split("\n").forEach((line) => {
     const colonIdx = line.indexOf(":");
     if (colonIdx === -1) return;
+
     const key = line.slice(0, colonIdx).trim();
-    const val = line.slice(colonIdx + 1).trim();
-    if (key) data[key] = val;
+    const value = line.slice(colonIdx + 1).trim();
+    if (key) data[key] = value;
   });
-  return {
-    title: data.title || "Untitled",
-    meta: data.meta || "",
-    body,
-  };
+
+  data.body = body;
+  return data;
+}
+
+function renderInlineMarkdown(text) {
+  let html = escapeHtml(text);
+
+  html = html.replace(
+    /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
+    '<a href="$2" target="_blank" rel="noopener">$1</a>',
+  );
+  html = html.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  html = html.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+  html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
+
+  return html;
+}
+
+function renderMarkdown(text) {
+  const source = String(text || "")
+    .replace(/\r\n/g, "\n")
+    .trim();
+  if (!source) return "";
+
+  const blocks = source.split(/\n{2,}/);
+  const rendered = [];
+  let inList = false;
+
+  function closeList() {
+    if (inList) {
+      rendered.push("</ul>");
+      inList = false;
+    }
+  }
+
+  blocks.forEach((block) => {
+    const trimmed = block.trim();
+
+    if (!trimmed) return;
+
+    if (
+      /^[-*]\s+/m.test(trimmed) &&
+      trimmed.split("\n").every((line) => /^[-*]\s+/.test(line.trim()))
+    ) {
+      if (!inList) {
+        rendered.push("<ul>");
+        inList = true;
+      }
+
+      trimmed.split("\n").forEach((line) => {
+        const itemText = line.trim().replace(/^[-*]\s+/, "");
+        rendered.push("<li>" + renderInlineMarkdown(itemText) + "</li>");
+      });
+
+      return;
+    }
+
+    closeList();
+
+    if (/^###\s+/.test(trimmed)) {
+      rendered.push(
+        "<h3>" + renderInlineMarkdown(trimmed.replace(/^###\s+/, "")) + "</h3>",
+      );
+      return;
+    }
+
+    if (/^##\s+/.test(trimmed)) {
+      rendered.push(
+        "<h2>" + renderInlineMarkdown(trimmed.replace(/^##\s+/, "")) + "</h2>",
+      );
+      return;
+    }
+
+    if (/^#\s+/.test(trimmed)) {
+      rendered.push(
+        "<h1>" + renderInlineMarkdown(trimmed.replace(/^#\s+/, "")) + "</h1>",
+      );
+      return;
+    }
+
+    if (/^>\s+/.test(trimmed)) {
+      const quote = trimmed
+        .split("\n")
+        .map((line) => line.replace(/^>\s?/, ""))
+        .join(" ");
+      rendered.push(
+        "<blockquote>" + renderInlineMarkdown(quote) + "</blockquote>",
+      );
+      return;
+    }
+
+    const paragraph = trimmed
+      .split("\n")
+      .map((line) => renderInlineMarkdown(line))
+      .join("<br>");
+
+    rendered.push("<p>" + paragraph + "</p>");
+  });
+
+  closeList();
+  return rendered.join("");
+}
+
+function derivePoemYear(poem) {
+  return String(poem.meta || "")
+    .split("·")[0]
+    .trim();
+}
+
+/* ============================================================
+   10. POETRY WINDOW
+   ============================================================ */
+
+function bindPoetryRow(row, index) {
+  row.addEventListener("click", () => showPoem(index));
+  row.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      showPoem(index);
+    }
+  });
+}
+
+function showPoem(index) {
+  const poem = (window.POEMS || [])[index];
+  if (!poem) return;
+
+  document.getElementById("poem-title").textContent = poem.title || "Untitled";
+  document.getElementById("poem-meta").textContent = poem.meta || "";
+  document.getElementById("poem-body").textContent = poem.body || "";
+
+  document.getElementById("poem-display").style.display = "block";
+  document.getElementById("poetry-list").style.display = "none";
+  document.querySelector('[data-back="poetry"]').style.display = "inline-flex";
+  document.querySelector("#window-poetry .status-left").textContent =
+    poem.title || "Untitled";
+}
+
+function showPoetryList() {
+  document.getElementById("poem-display").style.display = "none";
+  document.getElementById("poetry-list").style.display = "block";
+  document.querySelector('[data-back="poetry"]').style.display = "none";
+
+  const n = Array.isArray(window.POEMS) ? window.POEMS.length : 0;
+  document.querySelector("#window-poetry .status-left").textContent =
+    n + (n === 1 ? " poem" : " poems");
 }
 
 function rebuildPoetryList(poems) {
   const list = document.getElementById("poetry-list");
   if (!list) return;
 
-  // Preserve the header row, replace everything else
   const header = list.querySelector(".list-header");
   list.innerHTML = "";
   if (header) list.appendChild(header);
 
   poems.forEach((poem, i) => {
-    const year = (poem.meta || "").split("·")[0].trim();
     const row = document.createElement("div");
     row.className = "list-row";
-    row.dataset.poem = i;
+    row.dataset.poem = String(i);
     row.tabIndex = 0;
+
     row.innerHTML =
-      `<span class="col-name">${escapeHtml(poem.title)}</span>` +
-      `<span class="col-meta">${escapeHtml(year)}</span>`;
-    row.addEventListener("click", () => showPoem(i));
-    row.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        showPoem(i);
-      }
-    });
+      `<span class="col-name">${escapeHtml(poem.title || "Untitled")}</span>` +
+      `<span class="col-meta">${escapeHtml(derivePoemYear(poem))}</span>`;
+
+    bindPoetryRow(row, i);
     list.appendChild(row);
   });
 
-  const n = poems.length;
-  const status = document.querySelector("#window-poetry .status-left");
-  if (status) status.textContent = n + (n === 1 ? " poem" : " poems");
+  showPoetryList();
+}
+
+function initPoetryWindow() {
+  document.querySelectorAll(".list-row[data-poem]").forEach((row) => {
+    const idx = parseInt(row.dataset.poem, 10);
+    bindPoetryRow(row, idx);
+  });
+
+  const backBtn = document.querySelector('[data-back="poetry"]');
+  if (backBtn) backBtn.addEventListener("click", showPoetryList);
+}
+
+/* ============================================================
+   11. OTHER WORKS WINDOW
+   ============================================================ */
+
+function bindWorkCard(card, index) {
+  card.addEventListener("click", () => showWork(index));
+  card.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      showWork(index);
+    }
+  });
+}
+
+function showWork(index) {
+  const work = (window.WORKS || [])[index];
+  if (!work) return;
+
+  document.getElementById("works-v-icon").textContent = work.icon || "✦";
+  document.getElementById("works-v-type").textContent = work.type || "";
+  document.getElementById("works-v-title").textContent =
+    work.title || "Untitled";
+  document.getElementById("works-v-year").textContent = work.year || "";
+  document.getElementById("works-v-body").innerHTML = renderMarkdown(
+    work.body || "",
+  );
+
+  document.getElementById("works-display").style.display = "block";
+  document.getElementById("works-list-view").style.display = "none";
+  document.querySelector('[data-back="works"]').style.display = "inline-flex";
+  document.querySelector("#window-works .status-left").textContent =
+    work.title || "Untitled";
+}
+
+function showWorksList() {
+  document.getElementById("works-display").style.display = "none";
+  document.getElementById("works-list-view").style.display = "block";
+  document.querySelector('[data-back="works"]').style.display = "none";
+
+  const n = Array.isArray(window.WORKS) ? window.WORKS.length : 0;
+  document.querySelector("#window-works .status-left").textContent =
+    n + (n === 1 ? " item" : " items");
+}
+
+function rebuildWorksGrid(works) {
+  const grid = document.querySelector("#works-list-view .works-grid");
+  if (!grid) return;
+
+  grid.innerHTML = "";
+
+  works.forEach((work, i) => {
+    const card = document.createElement("div");
+    card.className = "works-card";
+    card.dataset.work = String(i);
+    card.tabIndex = 0;
+    card.setAttribute("role", "button");
+
+    card.innerHTML = [
+      `<div class="works-card-icon">${escapeHtml(work.icon || "✦")}</div>`,
+      `<div class="works-card-type">${escapeHtml(work.type || "Work")}</div>`,
+      `<div class="works-card-title">${escapeHtml(work.title || "Untitled")}</div>`,
+      `<div class="works-card-year">${escapeHtml(String(work.year || ""))}</div>`,
+      `<div class="works-card-desc">${escapeHtml(work.desc || "")}</div>`,
+    ].join("");
+
+    bindWorkCard(card, i);
+    grid.appendChild(card);
+  });
+
+  showWorksList();
+}
+
+function initWorksWindow() {
+  document.querySelectorAll(".works-card[data-work]").forEach((card) => {
+    const idx = parseInt(card.dataset.work, 10);
+    bindWorkCard(card, idx);
+  });
+
+  const backBtn = document.querySelector('[data-back="works"]');
+  if (backBtn) backBtn.addEventListener("click", showWorksList);
+}
+
+/* ============================================================
+   12. MARKDOWN COLLECTION LOADING
+   ============================================================ */
+
+async function loadCollectionFromMarkdown(manifestPath, directory, mapper) {
+  const idxResp = await fetch(manifestPath);
+  if (!idxResp.ok) {
+    throw new Error(manifestPath + " not found (" + idxResp.status + ")");
+  }
+
+  const files = await idxResp.json();
+  if (!Array.isArray(files) || files.length === 0) {
+    throw new Error("Empty manifest: " + manifestPath);
+  }
+
+  const items = await Promise.all(
+    files.map(async (filename) => {
+      const resp = await fetch(directory + "/" + filename);
+      if (!resp.ok) {
+        throw new Error("Could not fetch " + directory + "/" + filename);
+      }
+
+      const parsed = parseFrontmatter(await resp.text());
+      return mapper(parsed, filename);
+    }),
+  );
+
+  return items;
 }
 
 async function loadPoemsFromMarkdown() {
   try {
-    const idxResp = await fetch("poems/index.json");
-    if (!idxResp.ok)
-      throw new Error("poems/index.json not found (" + idxResp.status + ")");
-    const files = await idxResp.json();
-    if (!Array.isArray(files) || files.length === 0)
-      throw new Error("Empty index");
-
-    const poems = await Promise.all(
-      files.map(async (filename) => {
-        const resp = await fetch("poems/" + filename);
-        if (!resp.ok) throw new Error("Could not fetch poems/" + filename);
-        return parseFrontmatter(await resp.text());
+    const poems = await loadCollectionFromMarkdown(
+      "poems/index.json",
+      "poems",
+      (data) => ({
+        title: data.title || "Untitled",
+        meta: data.meta || "",
+        body: data.body || "",
       }),
     );
 
     window.POEMS = poems;
     rebuildPoetryList(poems);
   } catch (err) {
-    // Fall back to the inline window.POEMS defined in index.html
-    // (this also happens normally when previewing via file:// locally)
-    console.info(
-      "[poems] Using inline data — markdown load skipped:",
-      err.message,
+    console.info("[poems] Using inline fallback:", err.message);
+    if (Array.isArray(window.POEMS)) rebuildPoetryList(window.POEMS);
+  }
+}
+
+async function loadWorksFromMarkdown() {
+  try {
+    const works = await loadCollectionFromMarkdown(
+      "works/index.json",
+      "works",
+      (data) => ({
+        icon: data.icon || "✦",
+        type: data.type || "Work",
+        title: data.title || "Untitled",
+        year: data.year || "",
+        desc: data.desc || "",
+        body: data.body || "",
+      }),
     );
+
+    window.WORKS = works;
+    rebuildWorksGrid(works);
+  } catch (err) {
+    console.info("[works] Using inline fallback:", err.message);
+    if (Array.isArray(window.WORKS)) rebuildWorksGrid(window.WORKS);
   }
 }
 
 /* ============================================================
-   12. WINDOW CLICK → FOCUS (mousedown on any part of window)
+   13. WINDOW CLICK → FOCUS
    ============================================================ */
 
 function initWindowFocus() {
@@ -586,7 +796,7 @@ function initWindowFocus() {
 }
 
 /* ============================================================
-   13. GLOBAL MOUSE & TOUCH EVENTS (drag + resize routing)
+   14. GLOBAL EVENTS
    ============================================================ */
 
 function initGlobalEvents() {
@@ -594,12 +804,12 @@ function initGlobalEvents() {
     onDragMove(e);
     onResizeMove(e);
   });
+
   document.addEventListener("mouseup", () => {
     onDragEnd();
     onResizeEnd();
   });
 
-  // Touch move/end for title-bar drag
   document.addEventListener(
     "touchmove",
     (e) => {
@@ -610,11 +820,12 @@ function initGlobalEvents() {
     },
     { passive: false },
   );
+
   document.addEventListener("touchend", onDragEnd);
 }
 
 /* ============================================================
-   14. ATTACH TITLE-BAR & RESIZE HANDLE LISTENERS
+   15. WINDOW INTERACTIONS
    ============================================================ */
 
 function initWindowInteractions() {
@@ -628,7 +839,6 @@ function initWindowInteractions() {
     handle.addEventListener("mousedown", onResizeStart);
   });
 
-  // Delegated handler for all win-btn clicks
   document.addEventListener("click", (e) => {
     const btn = e.target.closest(".win-btn");
     if (btn) handleWinBtn(btn);
@@ -636,7 +846,7 @@ function initWindowInteractions() {
 }
 
 /* ============================================================
-   15. RESPONSIVE: body.mobile class for CSS hooks
+   16. RESPONSIVE BODY CLASS
    ============================================================ */
 
 function syncMobileClass() {
@@ -648,11 +858,9 @@ function syncMobileClass() {
    ============================================================ */
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Clock
   updateClock();
   setInterval(updateClock, 1000);
 
-  // 2. Default window positions (desktop only)
   if (window.innerWidth > 768) {
     const positions = {
       poetry: { top: 50, left: 60 },
@@ -660,6 +868,7 @@ document.addEventListener("DOMContentLoaded", () => {
       works: { top: 110, left: 180 },
       about: { top: 140, left: 240 },
     };
+
     WINDOWS.forEach((name) => {
       const win = getWin(name);
       if (!win) return;
@@ -668,10 +877,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 3. Open poetry window immediately so there's something to see
   openWindow("poetry");
 
-  // 4. Wire everything up
   initWindowInteractions();
   initWindowFocus();
   initGlobalEvents();
@@ -681,11 +888,9 @@ document.addEventListener("DOMContentLoaded", () => {
   initPoetryWindow();
   initWorksWindow();
 
-  // 5. Load poems from markdown (async — rebuilds list when files arrive;
-  //    falls back silently to inline window.POEMS if fetch fails)
   loadPoemsFromMarkdown();
+  loadWorksFromMarkdown();
 
-  // 6. Responsive body class
   syncMobileClass();
   window.addEventListener("resize", syncMobileClass);
 });

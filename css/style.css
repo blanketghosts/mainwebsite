@@ -1386,8 +1386,69 @@ body.resizing-window * {
     font-family: var(--font-serif);
     font-size: 14px;
     line-height: 1.8;
-    white-space: pre-wrap;
     color: #222222;
+}
+
+.works-viewer-body h1,
+.works-viewer-body h2,
+.works-viewer-body h3 {
+    font-family: var(--font-ui);
+    font-weight: bold;
+    line-height: 1.3;
+    margin: 0 0 10px;
+}
+
+.works-viewer-body h1 {
+    font-size: 18px;
+}
+
+.works-viewer-body h2 {
+    font-size: 16px;
+}
+
+.works-viewer-body h3 {
+    font-size: 14px;
+}
+
+.works-viewer-body p {
+    margin: 0 0 14px;
+}
+
+.works-viewer-body p:last-child {
+    margin-bottom: 0;
+}
+
+.works-viewer-body ul {
+    margin: 0 0 14px 20px;
+    list-style: square;
+}
+
+.works-viewer-body li {
+    margin-bottom: 6px;
+}
+
+.works-viewer-body blockquote {
+    margin: 0 0 14px;
+    padding-left: 12px;
+    border-left: 2px solid var(--mac-shadow);
+    color: #444444;
+}
+
+.works-viewer-body code {
+    font-family: Monaco, "Courier New", monospace;
+    font-size: 12px;
+    background: #eeeeee;
+    border: 1px solid #cccccc;
+    padding: 1px 4px;
+}
+
+.works-viewer-body a {
+    color: var(--mac-accent);
+    text-decoration: underline;
+}
+
+.works-viewer-body a:hover {
+    color: var(--mac-black);
 }
 
 /* ============================================================
