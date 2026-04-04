@@ -1,460 +1,845 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="A portfolio of poetry, music, and other creative works — gathered in one place, without algorithm or advertisement.">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="A portfolio of poetry, music, and other creative works — gathered in one place, without algorithm or advertisement."
+        />
 
-  <!-- Open Graph / Social -->
-  <meta property="og:type"        content="website">
-  <meta property="og:title"       content="Creative Works — Your Name">
-  <meta property="og:description" content="A portfolio of poetry, music, and other creative works — gathered in one place.">
-  <meta property="og:locale"      content="en_US">
+        <!-- Open Graph / Social -->
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Creative Works — Your Name" />
+        <meta
+            property="og:description"
+            content="A portfolio of poetry, music, and other creative works — gathered in one place."
+        />
+        <meta property="og:locale" content="en_US" />
 
-  <!-- Twitter Card -->
-  <meta name="twitter:card"        content="summary">
-  <meta name="twitter:title"       content="Creative Works — Your Name">
-  <meta name="twitter:description" content="A portfolio of poetry, music, and other creative works — gathered in one place.">
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Creative Works — Your Name" />
+        <meta
+            name="twitter:description"
+            content="A portfolio of poetry, music, and other creative works — gathered in one place."
+        />
 
-  <title>Creative Works — Your Name</title>
+        <title>Creative Works — Your Name</title>
 
-  <!-- Emoji favicon as inline SVG data URI -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>">
+        <!-- Emoji favicon as inline SVG data URI -->
+        <link
+            rel="icon"
+            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>"
+        />
 
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-
-  <!-- ============================================================
+        <link rel="stylesheet" href="css/style.css" />
+    </head>
+    <body>
+        <!-- ============================================================
        MENU BAR
        ============================================================ -->
-  <div id="menubar">
+        <div id="menubar">
+            <!-- Apple menu -->
+            <span class="menu-logo" id="apple-menu-trigger" title="Apple Menu"
+                >🍎</span
+            >
+            <div class="menu-dropdown" id="apple-dropdown">
+                <div class="dropdown-item">About This Site</div>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item">Poetry</div>
+                <div class="dropdown-item">Music</div>
+                <div class="dropdown-item">Other Works</div>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item" id="menu-github">
+                    View on GitHub ↗
+                </div>
+            </div>
 
-    <!-- Apple menu -->
-    <span class="menu-logo" id="apple-menu-trigger" title="Apple Menu">🍎</span>
-    <div class="menu-dropdown" id="apple-dropdown">
-      <div class="dropdown-item">About This Site</div>
-      <div class="dropdown-divider"></div>
-      <div class="dropdown-item">Poetry</div>
-      <div class="dropdown-item">Music</div>
-      <div class="dropdown-item">Other Works</div>
-      <div class="dropdown-divider"></div>
-      <div class="dropdown-item" id="menu-github">View on GitHub ↗</div>
-    </div>
+            <!-- File menu -->
+            <span class="menu-item" data-menu="file">File</span>
+            <div class="menu-dropdown" id="file-dropdown">
+                <div class="dropdown-item" data-action="open-poetry">
+                    Open Poetry
+                </div>
+                <div class="dropdown-item" data-action="open-music">
+                    Open Music
+                </div>
+                <div class="dropdown-item" data-action="open-works">
+                    Open Works
+                </div>
+                <div class="dropdown-item" data-action="open-about">
+                    Open About
+                </div>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item disabled">Close Window ⌘W</div>
+            </div>
 
-    <!-- File menu -->
-    <span class="menu-item" data-menu="file">File</span>
-    <div class="menu-dropdown" id="file-dropdown">
-      <div class="dropdown-item" data-action="open-poetry">Open Poetry</div>
-      <div class="dropdown-item" data-action="open-music">Open Music</div>
-      <div class="dropdown-item" data-action="open-works">Open Works</div>
-      <div class="dropdown-item" data-action="open-about">Open About</div>
-      <div class="dropdown-divider"></div>
-      <div class="dropdown-item disabled">Close Window  ⌘W</div>
-    </div>
+            <!-- View menu -->
+            <span class="menu-item" data-menu="view">View</span>
+            <div class="menu-dropdown" id="view-dropdown">
+                <div class="dropdown-item" data-action="arrange-windows">
+                    Arrange Windows
+                </div>
+                <div class="dropdown-item" data-action="close-all">
+                    Close All
+                </div>
+            </div>
 
-    <!-- View menu -->
-    <span class="menu-item" data-menu="view">View</span>
-    <div class="menu-dropdown" id="view-dropdown">
-      <div class="dropdown-item" data-action="arrange-windows">Arrange Windows</div>
-      <div class="dropdown-item" data-action="close-all">Close All</div>
-    </div>
+            <!-- Windows menu -->
+            <span class="menu-item" data-menu="windows">Windows</span>
+            <div class="menu-dropdown" id="windows-dropdown">
+                <div class="dropdown-item" data-action="open-poetry">
+                    📄 Poetry
+                </div>
+                <div class="dropdown-item" data-action="open-music">
+                    🎵 Music
+                </div>
+                <div class="dropdown-item" data-action="open-works">
+                    🎨 Other Works
+                </div>
+                <div class="dropdown-item" data-action="open-about">
+                    👤 About
+                </div>
+            </div>
 
-    <!-- Windows menu -->
-    <span class="menu-item" data-menu="windows">Windows</span>
-    <div class="menu-dropdown" id="windows-dropdown">
-      <div class="dropdown-item" data-action="open-poetry">📄 Poetry</div>
-      <div class="dropdown-item" data-action="open-music">🎵 Music</div>
-      <div class="dropdown-item" data-action="open-works">🎨 Other Works</div>
-      <div class="dropdown-item" data-action="open-about">👤 About</div>
-    </div>
+            <span id="clock">12:00 PM</span>
+        </div>
+        <!-- /#menubar -->
 
-    <span id="clock">12:00 PM</span>
-
-  </div><!-- /#menubar -->
-
-
-  <!-- ============================================================
+        <!-- ============================================================
        DESKTOP
        ============================================================ -->
-  <div id="desktop">
+        <div id="desktop">
+            <!-- ── Desktop Icons ─────────────────────────────────────── -->
 
-    <!-- ── Desktop Icons ─────────────────────────────────────── -->
+            <div
+                class="desktop-icon"
+                style="top: 40px; right: 20px"
+                data-window="poetry"
+                tabindex="0"
+                role="button"
+                aria-label="Open Poetry"
+            >
+                <div class="icon-img">📄</div>
+                <div class="icon-label">Poetry</div>
+            </div>
 
-    <div class="desktop-icon"
-         style="top: 40px; right: 20px;"
-         data-window="poetry"
-         tabindex="0"
-         role="button"
-         aria-label="Open Poetry">
-      <div class="icon-img">📄</div>
-      <div class="icon-label">Poetry</div>
-    </div>
+            <div
+                class="desktop-icon"
+                style="top: 140px; right: 20px"
+                data-window="music"
+                tabindex="0"
+                role="button"
+                aria-label="Open Music"
+            >
+                <div class="icon-img">🎵</div>
+                <div class="icon-label">Music</div>
+            </div>
 
-    <div class="desktop-icon"
-         style="top: 140px; right: 20px;"
-         data-window="music"
-         tabindex="0"
-         role="button"
-         aria-label="Open Music">
-      <div class="icon-img">🎵</div>
-      <div class="icon-label">Music</div>
-    </div>
+            <div
+                class="desktop-icon"
+                style="top: 240px; right: 20px"
+                data-window="works"
+                tabindex="0"
+                role="button"
+                aria-label="Open Other Works"
+            >
+                <div class="icon-img">🎨</div>
+                <div class="icon-label">Other Works</div>
+            </div>
 
-    <div class="desktop-icon"
-         style="top: 240px; right: 20px;"
-         data-window="works"
-         tabindex="0"
-         role="button"
-         aria-label="Open Other Works">
-      <div class="icon-img">🎨</div>
-      <div class="icon-label">Other Works</div>
-    </div>
+            <div
+                class="desktop-icon"
+                style="top: 340px; right: 20px"
+                data-window="about"
+                tabindex="0"
+                role="button"
+                aria-label="Open About"
+            >
+                <div class="icon-img">👤</div>
+                <div class="icon-label">About</div>
+            </div>
 
-    <div class="desktop-icon"
-         style="top: 340px; right: 20px;"
-         data-window="about"
-         tabindex="0"
-         role="button"
-         aria-label="Open About">
-      <div class="icon-img">👤</div>
-      <div class="icon-label">About</div>
-    </div>
-
-
-    <!-- ══════════════════════════════════════════════════════════
+            <!-- ══════════════════════════════════════════════════════════
          WINDOW: Poetry
          ══════════════════════════════════════════════════════════ -->
-    <div class="mac-window"
-         id="window-poetry"
-         style="top: 50px; left: 60px; width: 520px;"
-         role="dialog"
-         aria-label="Poetry"
-         aria-modal="true">
+            <div
+                class="mac-window"
+                id="window-poetry"
+                style="top: 50px; left: 60px; width: 520px"
+                role="dialog"
+                aria-label="Poetry"
+                aria-modal="true"
+            >
+                <div class="title-bar">
+                    <div class="win-controls">
+                        <button
+                            class="win-btn close-btn"
+                            data-action="close"
+                            aria-label="Close"
+                        ></button>
+                        <button
+                            class="win-btn collapse-btn"
+                            data-action="collapse"
+                            aria-label="Collapse"
+                        ></button>
+                        <button
+                            class="win-btn zoom-btn"
+                            data-action="zoom"
+                            aria-label="Zoom"
+                        ></button>
+                    </div>
+                    <div class="title-text">Poetry</div>
+                </div>
 
-      <div class="title-bar">
-        <div class="win-controls">
-          <button class="win-btn close-btn"    data-action="close"    aria-label="Close"></button>
-          <button class="win-btn collapse-btn" data-action="collapse" aria-label="Collapse"></button>
-          <button class="win-btn zoom-btn"     data-action="zoom"     aria-label="Zoom"></button>
-        </div>
-        <div class="title-text">Poetry</div>
-      </div>
+                <div
+                    class="window-body"
+                    style="
+                        display: flex;
+                        flex-direction: column;
+                        flex: 1;
+                        min-height: 0;
+                    "
+                >
+                    <div class="window-content">
+                        <!-- Back button (hidden until a poem is open) -->
+                        <button
+                            class="back-btn mac-btn"
+                            data-back="poetry"
+                            style="display: none"
+                        >
+                            ◀ Back
+                        </button>
 
-      <div class="window-body" style="display:flex;flex-direction:column;flex:1;min-height:0;">
-        <div class="window-content">
+                        <!-- List view -->
+                        <div class="mac-list" id="poetry-list">
+                            <div class="list-header">
+                                <span class="col-name">Title</span>
+                                <span class="col-meta">Date</span>
+                            </div>
+                            <div class="list-row" data-poem="0" tabindex="0">
+                                <span class="col-name"
+                                    >The Weight of Small Things</span
+                                >
+                                <span class="col-meta">2024</span>
+                            </div>
+                            <div class="list-row" data-poem="1" tabindex="0">
+                                <span class="col-name">Rain on Aluminum</span>
+                                <span class="col-meta">2024</span>
+                            </div>
+                            <div class="list-row" data-poem="2" tabindex="0">
+                                <span class="col-name"
+                                    >After the Phone Call</span
+                                >
+                                <span class="col-meta">2023</span>
+                            </div>
+                            <div class="list-row" data-poem="3" tabindex="0">
+                                <span class="col-name">Inventory</span>
+                                <span class="col-meta">2023</span>
+                            </div>
+                            <div class="list-row" data-poem="4" tabindex="0">
+                                <span class="col-name"
+                                    >Cartography of a Kitchen</span
+                                >
+                                <span class="col-meta">2022</span>
+                            </div>
+                        </div>
 
-          <!-- Back button (hidden until a poem is open) -->
-          <button class="back-btn mac-btn" data-back="poetry" style="display:none">◀ Back</button>
+                        <!-- Single-poem viewer (hidden by default) -->
+                        <div
+                            class="poem-viewer"
+                            id="poem-display"
+                            style="display: none"
+                        >
+                            <div class="poem-title" id="poem-title"></div>
+                            <div class="poem-meta" id="poem-meta"></div>
+                            <div class="poem-body" id="poem-body"></div>
+                        </div>
+                    </div>
+                    <!-- /.window-content -->
 
-          <!-- List view -->
-          <div class="mac-list" id="poetry-list">
-            <div class="list-header">
-              <span class="col-name">Title</span>
-              <span class="col-meta">Date</span>
+                    <div class="window-status-bar">
+                        <span class="status-left">5 poems</span>
+                        <span class="status-right">POETRY</span>
+                    </div>
+                </div>
+                <!-- /.window-body -->
+
+                <div class="window-resize" aria-hidden="true"></div>
             </div>
-            <div class="list-row" data-poem="0" tabindex="0">
-              <span class="col-name">The Weight of Small Things</span>
-              <span class="col-meta">2024</span>
-            </div>
-            <div class="list-row" data-poem="1" tabindex="0">
-              <span class="col-name">Rain on Aluminum</span>
-              <span class="col-meta">2024</span>
-            </div>
-            <div class="list-row" data-poem="2" tabindex="0">
-              <span class="col-name">After the Phone Call</span>
-              <span class="col-meta">2023</span>
-            </div>
-            <div class="list-row" data-poem="3" tabindex="0">
-              <span class="col-name">Inventory</span>
-              <span class="col-meta">2023</span>
-            </div>
-            <div class="list-row" data-poem="4" tabindex="0">
-              <span class="col-name">Cartography of a Kitchen</span>
-              <span class="col-meta">2022</span>
-            </div>
-          </div>
+            <!-- /#window-poetry -->
 
-          <!-- Single-poem viewer (hidden by default) -->
-          <div class="poem-viewer" id="poem-display" style="display:none">
-            <div class="poem-title" id="poem-title"></div>
-            <div class="poem-meta"  id="poem-meta"></div>
-            <div class="poem-body"  id="poem-body"></div>
-          </div>
-
-        </div><!-- /.window-content -->
-
-        <div class="window-status-bar">
-          <span class="status-left">5 poems</span>
-          <span class="status-right">POETRY</span>
-        </div>
-      </div><!-- /.window-body -->
-
-      <div class="window-resize" aria-hidden="true"></div>
-    </div><!-- /#window-poetry -->
-
-
-    <!-- ══════════════════════════════════════════════════════════
+            <!-- ══════════════════════════════════════════════════════════
          WINDOW: Music
          ══════════════════════════════════════════════════════════ -->
-    <div class="mac-window"
-         id="window-music"
-         style="top: 80px; left: 120px; width: 480px;"
-         role="dialog"
-         aria-label="Music"
-         aria-modal="true">
+            <div
+                class="mac-window"
+                id="window-music"
+                style="top: 80px; left: 120px; width: 480px"
+                role="dialog"
+                aria-label="Music"
+                aria-modal="true"
+            >
+                <div class="title-bar">
+                    <div class="win-controls">
+                        <button
+                            class="win-btn close-btn"
+                            data-action="close"
+                            aria-label="Close"
+                        ></button>
+                        <button
+                            class="win-btn collapse-btn"
+                            data-action="collapse"
+                            aria-label="Collapse"
+                        ></button>
+                        <button
+                            class="win-btn zoom-btn"
+                            data-action="zoom"
+                            aria-label="Zoom"
+                        ></button>
+                    </div>
+                    <div class="title-text">Music</div>
+                </div>
 
-      <div class="title-bar">
-        <div class="win-controls">
-          <button class="win-btn close-btn"    data-action="close"    aria-label="Close"></button>
-          <button class="win-btn collapse-btn" data-action="collapse" aria-label="Collapse"></button>
-          <button class="win-btn zoom-btn"     data-action="zoom"     aria-label="Zoom"></button>
-        </div>
-        <div class="title-text">Music</div>
-      </div>
+                <div
+                    class="window-body"
+                    style="
+                        display: flex;
+                        flex-direction: column;
+                        flex: 1;
+                        min-height: 0;
+                    "
+                >
+                    <div class="window-content">
+                        <div class="section-header">
+                            <h2 class="section-title">Music</h2>
+                            <p class="section-desc">
+                                Original compositions and recordings.
+                            </p>
+                        </div>
 
-      <div class="window-body" style="display:flex;flex-direction:column;flex:1;min-height:0;">
-        <div class="window-content">
+                        <div class="mac-audio-player">
+                            <div class="track-title">Track 1 — Threshold</div>
+                            <div class="track-meta">
+                                Acoustic Guitar · 3:42 · 2024
+                            </div>
+                            <!-- Replace src="" with your actual audio file path, e.g. src="audio/threshold.mp3" -->
+                            <audio controls src="" preload="none">
+                                Your browser does not support the audio element.
+                            </audio>
+                            <div class="track-desc">
+                                An instrumental piece exploring the space
+                                between silence and sound.
+                            </div>
+                        </div>
 
-          <div class="section-header">
-            <h2 class="section-title">Music</h2>
-            <p class="section-desc">Original compositions and recordings.</p>
-          </div>
+                        <div class="mac-audio-player">
+                            <div class="track-title">
+                                Track 2 — Correspondence
+                            </div>
+                            <div class="track-meta">Piano · 4:18 · 2024</div>
+                            <!-- Replace src="" with your actual audio file path -->
+                            <audio controls src="" preload="none">
+                                Your browser does not support the audio element.
+                            </audio>
+                            <div class="track-desc">
+                                A short piano study written during a period of
+                                letter-writing.
+                            </div>
+                        </div>
 
-          <div class="mac-audio-player">
-            <div class="track-title">Track 1 — Threshold</div>
-            <div class="track-meta">Acoustic Guitar · 3:42 · 2024</div>
-            <!-- Replace src="" with your actual audio file path, e.g. src="audio/threshold.mp3" -->
-            <audio controls src="" preload="none">
-              Your browser does not support the audio element.
-            </audio>
-            <div class="track-desc">An instrumental piece exploring the space between silence and sound.</div>
-          </div>
+                        <div class="mac-audio-player">
+                            <div class="track-title">
+                                Track 3 — Ground Floor
+                            </div>
+                            <div class="track-meta">Ambient · 5:55 · 2023</div>
+                            <!-- Replace src="" with your actual audio file path -->
+                            <audio controls src="" preload="none">
+                                Your browser does not support the audio element.
+                            </audio>
+                            <div class="track-desc">
+                                Field recordings layered with minimal synth.
+                                Recorded in an empty apartment.
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.window-content -->
 
-          <div class="mac-audio-player">
-            <div class="track-title">Track 2 — Correspondence</div>
-            <div class="track-meta">Piano · 4:18 · 2024</div>
-            <!-- Replace src="" with your actual audio file path -->
-            <audio controls src="" preload="none">
-              Your browser does not support the audio element.
-            </audio>
-            <div class="track-desc">A short piano study written during a period of letter-writing.</div>
-          </div>
+                    <div class="window-status-bar">
+                        <span class="status-left">3 tracks</span>
+                        <span class="status-right">MUSIC</span>
+                    </div>
+                </div>
+                <!-- /.window-body -->
 
-          <div class="mac-audio-player">
-            <div class="track-title">Track 3 — Ground Floor</div>
-            <div class="track-meta">Ambient · 5:55 · 2023</div>
-            <!-- Replace src="" with your actual audio file path -->
-            <audio controls src="" preload="none">
-              Your browser does not support the audio element.
-            </audio>
-            <div class="track-desc">Field recordings layered with minimal synth. Recorded in an empty apartment.</div>
-          </div>
+                <div class="window-resize" aria-hidden="true"></div>
+            </div>
+            <!-- /#window-music -->
 
-        </div><!-- /.window-content -->
-
-        <div class="window-status-bar">
-          <span class="status-left">3 tracks</span>
-          <span class="status-right">MUSIC</span>
-        </div>
-      </div><!-- /.window-body -->
-
-      <div class="window-resize" aria-hidden="true"></div>
-    </div><!-- /#window-music -->
-
-
-    <!-- ══════════════════════════════════════════════════════════
+            <!-- ══════════════════════════════════════════════════════════
          WINDOW: Other Works
          ══════════════════════════════════════════════════════════ -->
-    <div class="mac-window"
-         id="window-works"
-         style="top: 110px; left: 180px; width: 540px;"
-         role="dialog"
-         aria-label="Other Works"
-         aria-modal="true">
+            <div
+                class="mac-window"
+                id="window-works"
+                style="top: 110px; left: 180px; width: 540px"
+                role="dialog"
+                aria-label="Other Works"
+                aria-modal="true"
+            >
+                <div class="title-bar">
+                    <div class="win-controls">
+                        <button
+                            class="win-btn close-btn"
+                            data-action="close"
+                            aria-label="Close"
+                        ></button>
+                        <button
+                            class="win-btn collapse-btn"
+                            data-action="collapse"
+                            aria-label="Collapse"
+                        ></button>
+                        <button
+                            class="win-btn zoom-btn"
+                            data-action="zoom"
+                            aria-label="Zoom"
+                        ></button>
+                    </div>
+                    <div class="title-text">Other Works</div>
+                </div>
 
-      <div class="title-bar">
-        <div class="win-controls">
-          <button class="win-btn close-btn"    data-action="close"    aria-label="Close"></button>
-          <button class="win-btn collapse-btn" data-action="collapse" aria-label="Collapse"></button>
-          <button class="win-btn zoom-btn"     data-action="zoom"     aria-label="Zoom"></button>
-        </div>
-        <div class="title-text">Other Works</div>
-      </div>
+                <div
+                    class="window-body"
+                    style="
+                        display: flex;
+                        flex-direction: column;
+                        flex: 1;
+                        min-height: 0;
+                    "
+                >
+                    <div class="window-content">
+                        <button
+                            class="back-btn mac-btn"
+                            data-back="works"
+                            style="display: none"
+                        >
+                            ◀ Back
+                        </button>
 
-      <div class="window-body" style="display:flex;flex-direction:column;flex:1;min-height:0;">
-        <div class="window-content">
+                        <div id="works-list-view">
+                            <div class="section-header">
+                                <h2 class="section-title">Other Works</h2>
+                                <p class="section-desc">
+                                    Short fiction, essays, and visual
+                                    experiments.
+                                </p>
+                            </div>
 
-          <div class="section-header">
-            <h2 class="section-title">Other Works</h2>
-            <p class="section-desc">Short fiction, essays, and visual experiments.</p>
-          </div>
+                            <div class="works-grid">
+                                <div
+                                    class="works-card"
+                                    data-work="0"
+                                    tabindex="0"
+                                    role="button"
+                                >
+                                    <div class="works-card-icon">📖</div>
+                                    <div class="works-card-type">
+                                        Short Story
+                                    </div>
+                                    <div class="works-card-title">
+                                        The Archivist's Complaint
+                                    </div>
+                                    <div class="works-card-year">2024</div>
+                                    <div class="works-card-desc">
+                                        A cataloguer discovers that every object
+                                        she indexes begins to forget its own
+                                        history.
+                                    </div>
+                                </div>
 
-          <div class="works-grid">
+                                <div
+                                    class="works-card"
+                                    data-work="1"
+                                    tabindex="0"
+                                    role="button"
+                                >
+                                    <div class="works-card-icon">✍️</div>
+                                    <div class="works-card-type">Essay</div>
+                                    <div class="works-card-title">
+                                        On Keeping Notebooks
+                                    </div>
+                                    <div class="works-card-year">2024</div>
+                                    <div class="works-card-desc">
+                                        A meditation on the gap between writing
+                                        something down and understanding it.
+                                    </div>
+                                </div>
 
-            <div class="works-card">
-              <div class="works-card-icon">📖</div>
-              <div class="works-card-type">Short Story</div>
-              <div class="works-card-title">The Archivist's Complaint</div>
-              <div class="works-card-year">2024</div>
-              <div class="works-card-desc">A cataloguer discovers that every object she indexes begins to forget its own history.</div>
+                                <div
+                                    class="works-card"
+                                    data-work="2"
+                                    tabindex="0"
+                                    role="button"
+                                >
+                                    <div class="works-card-icon">🖼️</div>
+                                    <div class="works-card-type">Visual</div>
+                                    <div class="works-card-title">
+                                        Grid Studies I–IV
+                                    </div>
+                                    <div class="works-card-year">2023</div>
+                                    <div class="works-card-desc">
+                                        Four black-and-white prints exploring
+                                        structure and its failure.
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="works-card"
+                                    data-work="3"
+                                    tabindex="0"
+                                    role="button"
+                                >
+                                    <div class="works-card-icon">📖</div>
+                                    <div class="works-card-type">
+                                        Short Story
+                                    </div>
+                                    <div class="works-card-title">
+                                        Night Shift at the Observatory
+                                    </div>
+                                    <div class="works-card-year">2023</div>
+                                    <div class="works-card-desc">
+                                        Two astronomers argue about whether they
+                                        are discovering or inventing.
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="works-card"
+                                    data-work="4"
+                                    tabindex="0"
+                                    role="button"
+                                >
+                                    <div class="works-card-icon">✍️</div>
+                                    <div class="works-card-type">Essay</div>
+                                    <div class="works-card-title">
+                                        What Maps Leave Out
+                                    </div>
+                                    <div class="works-card-year">2022</div>
+                                    <div class="works-card-desc">
+                                        On absence, cartographic silence, and
+                                        the places that resist being named.
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="works-card"
+                                    data-work="5"
+                                    tabindex="0"
+                                    role="button"
+                                >
+                                    <div class="works-card-icon">🖼️</div>
+                                    <div class="works-card-type">Visual</div>
+                                    <div class="works-card-title">
+                                        Transcript (video)
+                                    </div>
+                                    <div class="works-card-year">2022</div>
+                                    <div class="works-card-desc">
+                                        A 7-minute video piece using found
+                                        speech, silence, and subtitle delay.
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.works-grid -->
+                        </div>
+                        <!-- /#works-list-view -->
+
+                        <div
+                            class="works-viewer"
+                            id="works-display"
+                            style="display: none"
+                        >
+                            <div class="works-viewer-header">
+                                <span
+                                    class="works-viewer-icon"
+                                    id="works-v-icon"
+                                ></span>
+                                <div class="works-viewer-meta">
+                                    <div
+                                        class="works-viewer-type"
+                                        id="works-v-type"
+                                    ></div>
+                                    <div
+                                        class="works-viewer-title"
+                                        id="works-v-title"
+                                    ></div>
+                                    <div
+                                        class="works-viewer-year"
+                                        id="works-v-year"
+                                    ></div>
+                                </div>
+                            </div>
+                            <div
+                                class="works-viewer-body"
+                                id="works-v-body"
+                            ></div>
+                        </div>
+                        <!-- /#works-display -->
+                    </div>
+                    <!-- /.window-content -->
+
+                    <div class="window-status-bar">
+                        <span class="status-left">6 items</span>
+                        <span class="status-right">OTHER WORKS</span>
+                    </div>
+                </div>
+                <!-- /.window-body -->
+
+                <div class="window-resize" aria-hidden="true"></div>
             </div>
+            <!-- /#window-works -->
 
-            <div class="works-card">
-              <div class="works-card-icon">✍️</div>
-              <div class="works-card-type">Essay</div>
-              <div class="works-card-title">On Keeping Notebooks</div>
-              <div class="works-card-year">2024</div>
-              <div class="works-card-desc">A meditation on the gap between writing something down and understanding it.</div>
-            </div>
-
-            <div class="works-card">
-              <div class="works-card-icon">🖼️</div>
-              <div class="works-card-type">Visual</div>
-              <div class="works-card-title">Grid Studies I–IV</div>
-              <div class="works-card-year">2023</div>
-              <div class="works-card-desc">Four black-and-white prints exploring structure and its failure.</div>
-            </div>
-
-            <div class="works-card">
-              <div class="works-card-icon">📖</div>
-              <div class="works-card-type">Short Story</div>
-              <div class="works-card-title">Night Shift at the Observatory</div>
-              <div class="works-card-year">2023</div>
-              <div class="works-card-desc">Two astronomers argue about whether they are discovering or inventing.</div>
-            </div>
-
-            <div class="works-card">
-              <div class="works-card-icon">✍️</div>
-              <div class="works-card-type">Essay</div>
-              <div class="works-card-title">What Maps Leave Out</div>
-              <div class="works-card-year">2022</div>
-              <div class="works-card-desc">On absence, cartographic silence, and the places that resist being named.</div>
-            </div>
-
-            <div class="works-card">
-              <div class="works-card-icon">🖼️</div>
-              <div class="works-card-type">Visual</div>
-              <div class="works-card-title">Transcript (video)</div>
-              <div class="works-card-year">2022</div>
-              <div class="works-card-desc">A 7-minute video piece using found speech, silence, and subtitle delay.</div>
-            </div>
-
-          </div><!-- /.works-grid -->
-
-        </div><!-- /.window-content -->
-
-        <div class="window-status-bar">
-          <span class="status-left">6 items</span>
-          <span class="status-right">OTHER WORKS</span>
-        </div>
-      </div><!-- /.window-body -->
-
-      <div class="window-resize" aria-hidden="true"></div>
-    </div><!-- /#window-works -->
-
-
-    <!-- ══════════════════════════════════════════════════════════
+            <!-- ══════════════════════════════════════════════════════════
          WINDOW: About
          ══════════════════════════════════════════════════════════ -->
-    <div class="mac-window"
-         id="window-about"
-         style="top: 140px; left: 240px; width: 400px;"
-         role="dialog"
-         aria-label="About"
-         aria-modal="true">
+            <div
+                class="mac-window"
+                id="window-about"
+                style="top: 140px; left: 240px; width: 400px"
+                role="dialog"
+                aria-label="About"
+                aria-modal="true"
+            >
+                <div class="title-bar">
+                    <div class="win-controls">
+                        <button
+                            class="win-btn close-btn"
+                            data-action="close"
+                            aria-label="Close"
+                        ></button>
+                        <button
+                            class="win-btn collapse-btn"
+                            data-action="collapse"
+                            aria-label="Collapse"
+                        ></button>
+                        <button
+                            class="win-btn zoom-btn"
+                            data-action="zoom"
+                            aria-label="Zoom"
+                        ></button>
+                    </div>
+                    <div class="title-text">About</div>
+                </div>
 
-      <div class="title-bar">
-        <div class="win-controls">
-          <button class="win-btn close-btn"    data-action="close"    aria-label="Close"></button>
-          <button class="win-btn collapse-btn" data-action="collapse" aria-label="Collapse"></button>
-          <button class="win-btn zoom-btn"     data-action="zoom"     aria-label="Zoom"></button>
-        </div>
-        <div class="title-text">About</div>
-      </div>
+                <div
+                    class="window-body"
+                    style="
+                        display: flex;
+                        flex-direction: column;
+                        flex: 1;
+                        min-height: 0;
+                    "
+                >
+                    <div class="window-content">
+                        <div class="about-content">
+                            <div
+                                class="about-avatar"
+                                aria-label="Author avatar"
+                            >
+                                ✦
+                            </div>
+                            <h2 class="about-name">Your Name</h2>
+                            <p class="about-tagline">
+                                Poet · Composer · Writer
+                            </p>
+                            <div class="about-bio">
+                                <p>
+                                    Welcome. This is a space for poetry, music,
+                                    and other creative work — gathered in one
+                                    place, without algorithm or advertisement.
+                                </p>
+                                <p>
+                                    I write poems mostly about ordinary things:
+                                    kitchens, weather, phone calls, the small
+                                    ceremonies people perform when they think no
+                                    one is watching. I make music that tends
+                                    toward the quiet end. I write occasional
+                                    essays and short fiction.
+                                </p>
+                                <p>
+                                    Everything here was made slowly and with
+                                    care.
+                                </p>
+                            </div>
+                            <div class="about-links">
+                                <a href="mailto:you@example.com" class="mac-btn"
+                                    >✉ Email</a
+                                >
+                                <a
+                                    href="https://github.com/"
+                                    class="mac-btn"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >GitHub</a
+                                >
+                                <a
+                                    href="https://twitter.com/"
+                                    class="mac-btn"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >Twitter/X</a
+                                >
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.window-content -->
 
-      <div class="window-body" style="display:flex;flex-direction:column;flex:1;min-height:0;">
-        <div class="window-content">
+                    <div class="window-status-bar">
+                        <span class="status-left">1 item</span>
+                        <span class="status-right">ABOUT</span>
+                    </div>
+                </div>
+                <!-- /.window-body -->
 
-          <div class="about-content">
-            <div class="about-avatar" aria-label="Author avatar">✦</div>
-            <h2 class="about-name">Your Name</h2>
-            <p class="about-tagline">Poet · Composer · Writer</p>
-            <div class="about-bio">
-              <p>Welcome. This is a space for poetry, music, and other creative work — gathered in one place, without algorithm or advertisement.</p>
-              <p>I write poems mostly about ordinary things: kitchens, weather, phone calls, the small ceremonies people perform when they think no one is watching. I make music that tends toward the quiet end. I write occasional essays and short fiction.</p>
-              <p>Everything here was made slowly and with care.</p>
+                <div class="window-resize" aria-hidden="true"></div>
             </div>
-            <div class="about-links">
-              <a href="mailto:you@example.com" class="mac-btn">✉ Email</a>
-              <a href="https://github.com/" class="mac-btn" target="_blank" rel="noopener">GitHub</a>
-              <a href="https://twitter.com/" class="mac-btn" target="_blank" rel="noopener">Twitter/X</a>
-            </div>
-          </div>
-
-        </div><!-- /.window-content -->
-
-        <div class="window-status-bar">
-          <span class="status-left">1 item</span>
-          <span class="status-right">ABOUT</span>
+            <!-- /#window-about -->
         </div>
-      </div><!-- /.window-body -->
+        <!-- /#desktop -->
 
-      <div class="window-resize" aria-hidden="true"></div>
-    </div><!-- /#window-about -->
-
-
-  </div><!-- /#desktop -->
-
-
-  <!-- ============================================================
+        <!-- ============================================================
        MOBILE DOCK
        ============================================================ -->
-  <div id="mobile-dock">
+        <div id="mobile-dock">
+            <div class="dock-item" data-window="poetry">
+                <span class="dock-icon">📄</span>
+                <span class="dock-label">Poetry</span>
+            </div>
 
-    <div class="dock-item" data-window="poetry">
-      <span class="dock-icon">📄</span>
-      <span class="dock-label">Poetry</span>
-    </div>
+            <div class="dock-item" data-window="music">
+                <span class="dock-icon">🎵</span>
+                <span class="dock-label">Music</span>
+            </div>
 
-    <div class="dock-item" data-window="music">
-      <span class="dock-icon">🎵</span>
-      <span class="dock-label">Music</span>
-    </div>
+            <div class="dock-item" data-window="works">
+                <span class="dock-icon">🎨</span>
+                <span class="dock-label">Works</span>
+            </div>
 
-    <div class="dock-item" data-window="works">
-      <span class="dock-icon">🎨</span>
-      <span class="dock-label">Works</span>
-    </div>
+            <div class="dock-item" data-window="about">
+                <span class="dock-icon">👤</span>
+                <span class="dock-label">About</span>
+            </div>
+        </div>
+        <!-- /#mobile-dock -->
 
-    <div class="dock-item" data-window="about">
-      <span class="dock-icon">👤</span>
-      <span class="dock-label">About</span>
-    </div>
-
-  </div><!-- /#mobile-dock -->
-
-
-  <!-- ============================================================
+        <!-- ============================================================
        NO-SCRIPT FALLBACK
        ============================================================ -->
-  <noscript>
-    <div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#cccccc;font-family:sans-serif;font-size:16px;text-align:center;padding:40px;">
-      Please enable JavaScript to use this site.
-    </div>
-  </noscript>
+        <noscript>
+            <div
+                style="
+                    position: fixed;
+                    inset: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: #cccccc;
+                    font-family: sans-serif;
+                    font-size: 16px;
+                    text-align: center;
+                    padding: 40px;
+                "
+            >
+                Please enable JavaScript to use this site.
+            </div>
+        </noscript>
 
+        <!-- ============================================================
+       WORKS DATA  (inline — must appear before app.js)
+       ============================================================ -->
+        <script>
+            window.WORKS = [
+                {
+                    icon: "📖",
+                    type: "Short Story",
+                    title: "The Archivist's Complaint",
+                    year: "2024",
+                    desc: "A cataloguer discovers that every object she indexes begins to forget its own history.",
+                    body: `She begins each day with a fresh index card and the same problem: the objects do not cooperate. The tea tin she catalogued last Tuesday as "tin, decorative, floral motif, circa 1940s" has by Thursday become simply a tin. By the following Monday it is a container. By the end of the month it will be a thing that holds.
 
-  <!-- ============================================================
+She has tried explaining this to her supervisor. He nods sympathetically and suggests she might benefit from more precise language. She nods back and does not say: I am using the most precise language available. The objects are forgetting themselves. I am only recording what they leave behind.`,
+                },
+                {
+                    icon: "✍️",
+                    type: "Essay",
+                    title: "On Keeping Notebooks",
+                    year: "2024",
+                    desc: "A meditation on the gap between writing something down and understanding it.",
+                    body: `There is a notebook from 2019 that I cannot read without feeling that I am trespassing. Not because the contents are private — they are, mostly, observations about weather and transit and the faces of strangers — but because the person who wrote them understood something about a Tuesday afternoon in March that I have since lost and cannot recover.
+
+This is the thing about notebooks that no one mentions: they are not records of your thoughts. They are evidence that you had thoughts, once, that have since gone somewhere else.`,
+                },
+                {
+                    icon: "🖼️",
+                    type: "Visual",
+                    title: "Grid Studies I–IV",
+                    year: "2023",
+                    desc: "Four black-and-white prints exploring structure and its failure.",
+                    body: `Four prints made during a period of methodical attention. Each begins with a grid — twelve columns, nine rows — and proceeds by removal. Something is taken from each square: line weight, color, pressure, ink. By the fourth print, the grid is present only as absence, a set of coordinates for something no longer there.
+
+The question the series asks is whether structure survives the removal of its parts. The answer the prints give is not a clear one.`,
+                },
+                {
+                    icon: "📖",
+                    type: "Short Story",
+                    title: "Night Shift at the Observatory",
+                    year: "2023",
+                    desc: "Two astronomers argue about whether they are discovering or inventing.",
+                    body: `"You're inventing it," said Marisol, her eye still pressed to the eyepiece. "The whole enterprise. Naming, measuring, mapping. All of it."
+
+"I'm describing it," said Fenn.
+
+"Same thing." She straightened up and made a note. "We point at something and say: there. And by saying there we put it somewhere. Before us it was just —" She gestured at the dome above them, the gap where the roof had slid open to let in the dark.
+
+Fenn considered this. Outside, the mountain was very quiet.
+
+"That seems like a lot of responsibility," he said finally.
+
+"Yes," said Marisol. "It is."`,
+                },
+                {
+                    icon: "✍️",
+                    type: "Essay",
+                    title: "What Maps Leave Out",
+                    year: "2022",
+                    desc: "On absence, cartographic silence, and the places that resist being named.",
+                    body: `Every map is an argument about what matters. The cartographer decides: this river, yes; this path, no. This city, named; this settlement, implied by the road that ends near it. The blank spaces on historical maps are not empty — they are full of everything the mapmaker chose not to see, or could not, or was not permitted to.
+
+What interests me is the negative space: the coastlines that trail off, the inland territories marked simply "unknown," the areas described only by what surrounds them. A place defined entirely by adjacency is still a place.`,
+                },
+                {
+                    icon: "🖼️",
+                    type: "Visual",
+                    title: "Transcript (video)",
+                    year: "2022",
+                    desc: "A 7-minute video piece using found speech, silence, and subtitle delay.",
+                    body: `Seven minutes of found speech — fragments of interviews, announcements, instructions — played against subtitles that do not match. The subtitles arrive four seconds late, or translate into a language adjacent to the one being spoken, or describe sounds that are not present.
+
+The piece is about the gap between what is said and what is understood. It is also about waiting. Several people who have watched it described feeling that they are about to understand something that keeps not arriving. This is the intended effect.`,
+                },
+            ];
+        </script>
+
+        <!-- ============================================================
        POEM DATA  (inline — must appear before app.js)
        ============================================================ -->
-  <script>
-    window.POEMS = [
-      {
-        title: "The Weight of Small Things",
-        meta:  "2024 · Free verse",
-        body:
-`I've been thinking about the spoon
+        <script>
+            window.POEMS = [
+                {
+                    title: "The Weight of Small Things",
+                    meta: "2024 · Free verse",
+                    body: `I've been thinking about the spoon
 that's been in this drawer for eleven years,
 the one that came from nowhere anyone remembers,
 with a slight bend at the neck
@@ -467,13 +852,12 @@ It participates in breakfasts, soups, the occasional
 late-night inventory of what we're doing here —
 mute, serviceable, present
 the way certain people are present
-whom we do not appreciate until they leave.`
-      },
-      {
-        title: "Rain on Aluminum",
-        meta:  "2024 · Free verse",
-        body:
-`The awning over the back door
+whom we do not appreciate until they leave.`,
+                },
+                {
+                    title: "Rain on Aluminum",
+                    meta: "2024 · Free verse",
+                    body: `The awning over the back door
 turns every downpour into percussion —
 a sound like applause with no source,
 no performance to explain it.
@@ -483,13 +867,12 @@ to something that does not know it's beautiful,
 that doesn't need to.
 
 Most things that comfort me
-are like this.`
-      },
-      {
-        title: "After the Phone Call",
-        meta:  "2023 · Free verse",
-        body:
-`I went through the motions
+are like this.`,
+                },
+                {
+                    title: "After the Phone Call",
+                    meta: "2023 · Free verse",
+                    body: `I went through the motions
 of the rest of the evening:
 rinsed the mug,
 checked the lock,
@@ -501,21 +884,19 @@ The driver got out and looked back at the car
 as if to say: close enough.
 
 I thought: yes.
-I thought: exactly.`
-      },
-      {
-        title: "Inventory",
-        meta:  "2023 · Prose poem",
-        body:
-`What I have: one good coat, one lamp that buzzes, a jar of beans I keep meaning to cook, a list of names I've carried since the summer I turned twenty-three and didn't know how to say goodbye, a system for the mail that no longer works, a slightly better system for the mail, the word for a smell that arrives before the rain in a language I'm forgetting, three songs that belong to specific years the way a key belongs to a lock, a tendency to underestimate distances, several rooms I can walk through in my sleep.
+I thought: exactly.`,
+                },
+                {
+                    title: "Inventory",
+                    meta: "2023 · Prose poem",
+                    body: `What I have: one good coat, one lamp that buzzes, a jar of beans I keep meaning to cook, a list of names I've carried since the summer I turned twenty-three and didn't know how to say goodbye, a system for the mail that no longer works, a slightly better system for the mail, the word for a smell that arrives before the rain in a language I'm forgetting, three songs that belong to specific years the way a key belongs to a lock, a tendency to underestimate distances, several rooms I can walk through in my sleep.
 
-What I am owed: unclear. What I owe: more than I thought.`
-      },
-      {
-        title: "Cartography of a Kitchen",
-        meta:  "2022 · Free verse",
-        body:
-`There are two territories in this kitchen —
+What I am owed: unclear. What I owe: more than I thought.`,
+                },
+                {
+                    title: "Cartography of a Kitchen",
+                    meta: "2022 · Free verse",
+                    body: `There are two territories in this kitchen —
 the space near the stove, which is mine,
 and the rest, which is negotiated.
 
@@ -531,15 +912,14 @@ Every morning the light moves
 and we adjust,
 and this seems,
 on good days,
-like a kind of practice.`
-      }
-    ];
-  </script>
+like a kind of practice.`,
+                },
+            ];
+        </script>
 
-  <!-- ============================================================
+        <!-- ============================================================
        APP SCRIPT
        ============================================================ -->
-  <script src="js/app.js"></script>
-
-</body>
+        <script src="js/app.js"></script>
+    </body>
 </html>
