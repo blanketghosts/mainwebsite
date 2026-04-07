@@ -7,9 +7,13 @@
    CSS CUSTOM PROPERTIES (VARIABLES)
    ============================================================ */
 
-:root {
+:root,
+:root[data-theme="platinum"] {
     --mac-bg: #bbbbbb;
     --mac-desktop: #408080;
+    --mac-desktop-pattern-a: #4a9090;
+    --mac-desktop-pattern-b: #408080;
+    --mac-menu-bar-bg: #eeeeee;
     --mac-black: #000000;
     --mac-white: #ffffff;
     --mac-light: #dddddd;
@@ -21,17 +25,17 @@
     /* Gradient shortcuts */
     --title-inactive: repeating-linear-gradient(
         to bottom,
-        #ffffff 0px,
-        #ffffff 1px,
+        var(--mac-title-stripe-light) 0px,
+        var(--mac-title-stripe-light) 1px,
         #aaaaaa 1px,
         #aaaaaa 2px
     );
     --title-active: repeating-linear-gradient(
         to bottom,
-        #ffffff 0px,
-        #ffffff 1px,
-        #888888 1px,
-        #888888 2px
+        var(--mac-title-stripe-light) 0px,
+        var(--mac-title-stripe-light) 1px,
+        var(--mac-title-stripe-dark) 1px,
+        var(--mac-title-stripe-dark) 2px
     );
 
     /* Typography */
@@ -42,6 +46,84 @@
     --fs-ui: 12px;
     --fs-body: 14px;
     --fs-small: 11px;
+}
+
+:root[data-theme="blueberry"] {
+    --mac-bg: #c7d2e0;
+    --mac-desktop: #3f66a6;
+    --mac-desktop-pattern-a: #5478b5;
+    --mac-desktop-pattern-b: #3f66a6;
+    --mac-menu-bar-bg: #e9edf6;
+    --mac-light: #e5ebf3;
+    --mac-shadow: #7b89a1;
+    --mac-title-stripe-light: #ffffff;
+    --mac-title-stripe-dark: #7484a4;
+    --mac-accent: #102a67;
+}
+
+:root[data-theme="grape"] {
+    --mac-bg: #c7bfd3;
+    --mac-desktop: #6f5b8a;
+    --mac-desktop-pattern-a: #816a9d;
+    --mac-desktop-pattern-b: #6f5b8a;
+    --mac-menu-bar-bg: #eee8f7;
+    --mac-light: #e5dff0;
+    --mac-shadow: #7b6f92;
+    --mac-title-stripe-light: #ffffff;
+    --mac-title-stripe-dark: #76658e;
+    --mac-accent: #3a1f66;
+}
+
+:root[data-theme="forest"] {
+    --mac-bg: #c3d0c0;
+    --mac-desktop: #4f7a54;
+    --mac-desktop-pattern-a: #648d69;
+    --mac-desktop-pattern-b: #4f7a54;
+    --mac-menu-bar-bg: #edf4eb;
+    --mac-light: #e5eee3;
+    --mac-shadow: #788873;
+    --mac-title-stripe-light: #ffffff;
+    --mac-title-stripe-dark: #6f836c;
+    --mac-accent: #133f20;
+}
+
+:root[data-theme="rose"] {
+    --mac-bg: #d8c2c9;
+    --mac-desktop: #a56b7d;
+    --mac-desktop-pattern-a: #b77f90;
+    --mac-desktop-pattern-b: #a56b7d;
+    --mac-menu-bar-bg: #f7eff2;
+    --mac-light: #f1e6ea;
+    --mac-shadow: #96717b;
+    --mac-title-stripe-light: #ffffff;
+    --mac-title-stripe-dark: #8d6672;
+    --mac-accent: #6f1730;
+}
+
+:root[data-theme="graphite"] {
+    --mac-bg: #c5c9cf;
+    --mac-desktop: #5a6772;
+    --mac-desktop-pattern-a: #6d7a86;
+    --mac-desktop-pattern-b: #5a6772;
+    --mac-menu-bar-bg: #f0f2f4;
+    --mac-light: #e7eaee;
+    --mac-shadow: #777e88;
+    --mac-title-stripe-light: #ffffff;
+    --mac-title-stripe-dark: #707782;
+    --mac-accent: #27313a;
+}
+
+:root[data-theme="sunset"] {
+    --mac-bg: #d8c7b5;
+    --mac-desktop: #b07a4e;
+    --mac-desktop-pattern-a: #c28b5f;
+    --mac-desktop-pattern-b: #b07a4e;
+    --mac-menu-bar-bg: #f7f1ea;
+    --mac-light: #efe6db;
+    --mac-shadow: #937c66;
+    --mac-title-stripe-light: #ffffff;
+    --mac-title-stripe-dark: #876f58;
+    --mac-accent: #7c3d10;
 }
 
 /* ============================================================
@@ -130,7 +212,7 @@ ol {
     left: 0;
     right: 0;
     height: 22px;
-    background: #eeeeee;
+    background: var(--mac-menu-bar-bg);
     border-bottom: 1px solid var(--mac-black);
     z-index: 9999;
     display: flex;
@@ -198,11 +280,25 @@ ol {
 }
 
 .dropdown-item {
+    position: relative;
     padding: 4px 20px;
     cursor: pointer;
     white-space: nowrap;
     font-size: var(--fs-ui);
     font-weight: normal;
+}
+
+.dropdown-item.checked {
+    font-weight: bold;
+    padding-left: 28px;
+}
+
+.dropdown-item.checked::before {
+    content: "✓";
+    position: absolute;
+    left: 10px;
+    top: 4px;
+    color: inherit;
 }
 
 .dropdown-item:hover,
@@ -239,9 +335,11 @@ ol {
     bottom: 0;
     overflow: hidden;
 
-    /* Classic teal dither checkerboard */
     background-color: var(--mac-desktop);
-    background-image: repeating-conic-gradient(#4a9090 0% 25%, #408080 0% 50%);
+    background-image: repeating-conic-gradient(
+        var(--mac-desktop-pattern-a) 0% 25%,
+        var(--mac-desktop-pattern-b) 0% 50%
+    );
     background-size: 2px 2px;
 }
 

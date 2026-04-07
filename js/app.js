@@ -17,6 +17,17 @@ window.ABOUT =
 
 const WINDOWS = ["poetry", "music", "works", "about"];
 const MENUBAR_HEIGHT = 22;
+const THEME_STORAGE_KEY = "classic-mac-theme";
+const DEFAULT_THEME = "platinum";
+const THEMES = [
+  "platinum",
+  "blueberry",
+  "grape",
+  "forest",
+  "rose",
+  "graphite",
+  "sunset",
+];
 
 let zCounter = 100;
 let dragState = null;
@@ -78,6 +89,42 @@ function updateClock() {
     minute: "2-digit",
     hour12: true,
   });
+}
+
+function getStoredTheme() {
+  try {
+    const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
+    return THEMES.includes(stored) ? stored : DEFAULT_THEME;
+  } catch {
+    return DEFAULT_THEME;
+  }
+}
+
+function refreshThemeMenuChecks() {
+  const currentTheme = document.documentElement.dataset.theme || DEFAULT_THEME;
+
+  document
+    .querySelectorAll(".dropdown-item[data-theme-choice]")
+    .forEach((item) => {
+      item.classList.toggle(
+        "checked",
+        item.dataset.themeChoice === currentTheme,
+      );
+    });
+}
+
+function applyTheme(themeName) {
+  const nextTheme = THEMES.includes(themeName) ? themeName : DEFAULT_THEME;
+
+  document.documentElement.dataset.theme = nextTheme;
+
+  try {
+    window.localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+  } catch {
+    // Ignore storage errors and still apply the theme for this session.
+  }
+
+  refreshThemeMenuChecks();
 }
 
 /* ============================================================
@@ -427,6 +474,16 @@ function initMenuBar() {
     });
   });
 
+  document
+    .querySelectorAll(".dropdown-item[data-theme-choice]")
+    .forEach((item) => {
+      item.addEventListener("click", (e) => {
+        e.stopPropagation();
+        closeAllDropdowns();
+        applyTheme(item.dataset.themeChoice);
+      });
+    });
+
   const githubItem = document.getElementById("menu-github");
   if (githubItem) {
     githubItem.addEventListener("click", (e) => {
@@ -440,6 +497,7 @@ function initMenuBar() {
     });
   }
 
+  refreshThemeMenuChecks();
   document.addEventListener("click", closeAllDropdowns);
 }
 
@@ -1084,6 +1142,8 @@ function syncMobileClass() {
    ============================================================ */
 
 document.addEventListener("DOMContentLoaded", () => {
+  applyTheme(getStoredTheme());
+
   updateClock();
   setInterval(updateClock, 1000);
 
