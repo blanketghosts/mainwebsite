@@ -30,9 +30,58 @@
             href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>"
         />
 
+        <script>
+            (() => {
+                try {
+                    const storedTheme =
+                        localStorage.getItem("classic-mac-theme");
+                    const allowedThemes = [
+                        "platinum",
+                        "blueberry",
+                        "grape",
+                        "forest",
+                        "rose",
+                        "graphite",
+                        "sunset",
+                    ];
+                    document.documentElement.dataset.theme =
+                        allowedThemes.includes(storedTheme)
+                            ? storedTheme
+                            : "platinum";
+                } catch {
+                    document.documentElement.dataset.theme = "platinum";
+                }
+            })();
+        </script>
         <link rel="stylesheet" href="css/style.css" />
     </head>
     <body>
+        <div id="boot-screen" aria-hidden="true">
+            <div class="boot-screen-window">
+                <div class="boot-screen-header">
+                    <span class="boot-screen-apple">🍎</span>
+                    <span class="boot-screen-title">Welcome to Macintosh</span>
+                </div>
+                <div class="boot-screen-body">
+                    <div class="boot-screen-icon">🖥️</div>
+                    <div class="boot-screen-copy">
+                        <p class="boot-screen-text">
+                            Starting up Creative Works…
+                        </p>
+                        <div class="boot-screen-progress">
+                            <div
+                                class="boot-screen-progress-bar"
+                                id="boot-progress-bar"
+                            ></div>
+                        </div>
+                        <p class="boot-screen-subtext">
+                            Loading desktop, windows, and content files.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="menubar">
             <span class="menu-logo" id="apple-menu-trigger" title="Apple Menu"
                 >🍎</span

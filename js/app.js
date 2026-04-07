@@ -117,6 +117,9 @@ function applyTheme(themeName) {
   const nextTheme = THEMES.includes(themeName) ? themeName : DEFAULT_THEME;
 
   document.documentElement.dataset.theme = nextTheme;
+  if (document.body) {
+    document.body.dataset.theme = nextTheme;
+  }
 
   try {
     window.localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
@@ -125,6 +128,46 @@ function applyTheme(themeName) {
   }
 
   refreshThemeMenuChecks();
+}
+
+function delay(ms) {
+  return new Promise((resolve) => {
+    window.setTimeout(resolve, ms);
+  });
+}
+
+function setBootProgress(percent) {
+  const bar = document.getElementById("boot-progress-bar");
+  if (!bar) return;
+
+  const safePercent = Math.max(0, Math.min(100, percent));
+  bar.style.width = safePercent + "%";
+}
+
+function hideBootScreen() {
+  const bootScreen = document.getElementById("boot-screen");
+  if (!bootScreen) return;
+
+  bootScreen.classList.add("hidden");
+  document.body.classList.remove("booting");
+}
+
+function beginBootSequence() {
+  document.body.classList.add("booting");
+  setBootProgress(6);
+
+  let progress = 6;
+  const timer = window.setInterval(() => {
+    progress = Math.min(progress + 7, 90);
+    setBootProgress(progress);
+  }, 120);
+
+  return {
+    complete() {
+      window.clearInterval(timer);
+      setBootProgress(100);
+    },
+  };
 }
 
 /* ============================================================
@@ -1141,8 +1184,11 @@ function syncMobileClass() {
    STARTUP
    ============================================================ */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   applyTheme(getStoredTheme());
+
+  const bootSequence = beginBootSequence();
+  const minimumBootTime = delay(1600);
 
   updateClock();
   setInterval(updateClock, 1000);
@@ -1179,11 +1225,19 @@ document.addEventListener("DOMContentLoaded", () => {
   rebuildMusicList([]);
   renderAbout({});
 
-  loadPoemsFromMarkdown();
-  loadWorksFromMarkdown();
-  loadMusicFromJson();
-  loadAboutFromMarkdown();
-
   syncMobileClass();
   window.addEventListener("resize", syncMobileClass);
+
+  const contentLoads = Promise.allSettled([
+    loadPoemsFromMarkdown(),
+    loadWorksFromMarkdown(),
+    loadMusicFromJson(),
+    loadAboutFromMarkdown(),
+  ]);
+
+  await Promise.all([minimumBootTime, contentLoads]);
+
+  bootSequence.complete();
+  await delay(180);
+  hideBootScreen();
 });
