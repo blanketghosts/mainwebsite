@@ -1656,9 +1656,10 @@ body.resizing-window * {
 }
 
 .boot-screen-icon {
-    width: 64px;
-    height: 64px;
+    width: 84px;
+    height: 84px;
     flex-shrink: 0;
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1667,8 +1668,36 @@ body.resizing-window * {
     box-shadow:
         inset 2px 2px 0 var(--mac-light),
         inset -2px -2px 0 var(--mac-shadow);
-    font-size: 34px;
+    overflow: hidden;
+}
+
+.boot-mac-shell {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    font-size: 46px;
     line-height: 1;
+}
+
+.boot-mac-face {
+    position: absolute;
+    left: 31px;
+    top: 25px;
+    font-size: 14px;
+    line-height: 1;
+    color: var(--mac-black);
+    font-family: Geneva, Arial, sans-serif;
+    font-weight: bold;
+}
+
+.boot-mac-guitar {
+    position: absolute;
+    right: 6px;
+    bottom: 8px;
+    font-size: 30px;
+    line-height: 1;
+    transform: rotate(-18deg);
+    transform-origin: center;
 }
 
 .boot-screen-copy {
