@@ -1,20 +1,8 @@
 [
   {
-    "title": "Threshold",
-    "meta": "Acoustic Guitar · 3:42 · 2024",
-    "src": "audio/threshold.mp3",
-    "desc": "An instrumental piece exploring the space between silence and sound."
-  },
-  {
-    "title": "Correspondence",
-    "meta": "Piano · 4:18 · 2024",
-    "src": "audio/correspondence.mp3",
-    "desc": "A short piano study written during a period of letter-writing."
-  },
-  {
-    "title": "Ground Floor",
-    "meta": "Ambient · 5:55 · 2023",
-    "src": "audio/ground-floor.mp3",
-    "desc": "Field recordings layered with minimal synth. Recorded in an empty apartment."
+    "title": "Symphony_No_1_Sketch",
+    "meta": "Piano · 3:16 · 2008",
+    "src": "audio/Symphony_No_1_Sketch_1.m4a",
+    "desc": "The piece that started it all"
   }
 ]
